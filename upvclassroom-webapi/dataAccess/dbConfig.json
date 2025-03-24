@@ -1,0 +1,10 @@
+{
+    "host": "localhost",
+    "user": "root",
+    "password": "root",
+    "database": "upvclassroom",
+    "port": 3306,
+    "waitForConnections": true,
+    "connectionLimit": 64,
+    "queueLimit": 0
+}
