@@ -10,3 +10,6 @@ app.get("/", (req, res) =>{
     res.send("Hola desde Express")
 });
 
+app.listen(PORT, () =>{
+    console.log("Aplicación Express corriendo...");
+});
