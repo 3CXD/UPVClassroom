@@ -1,9 +1,7 @@
-const mysql = require("mysql2/promise");
+const mysql = require("mysql2");
 const dbConfig = require("./dbConfig.json");
 
 const pool = mysql.createPool(dbConfig);
-//const promisePool = pool.promise();
+const promisePool = pool.promise();
 
-module.exports = {
-    query: (sql, params) => pool.execute(sql, params)
-};
+module.exports = promisePool;
