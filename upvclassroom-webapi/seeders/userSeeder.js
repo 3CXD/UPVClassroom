@@ -6,7 +6,13 @@ async function seedUsers(db) {
         {
             username: "teacher1",
             email: "teacher1@example.com",
-            password_hash: "password1",
+            password_hash: "passwordteacher1",
+            role: "teacher",
+        },
+        {
+            username: "teacher2",
+            email: "teacher2@example.com",
+            password_hash: "passwordteacher2",
             role: "teacher",
         },
         {
