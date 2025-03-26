@@ -1,21 +1,26 @@
 const express = require("express");
+const cors = require("cors");
+
 //const cors = require("cors");
 
 const EnrollmentService = require("./services/EnrollmentService");
 const UserService = require("./services/UserService");
 const ClassService = require("./services/ClassService");
+const e = require("express");
 
 const app = express();
 const PORT = 3002;
+const saltRounds = 10;
 
 app.use(express.json())
+//app.use(cors)
+
+///////////////////////// GET ///////////////////////// 
 
 app.get("/", (req, res) =>{
     console.log("ejecutando el handing del root app");
     res.send("Hola desde Express")
 });
-
-//TODO: IMPLEMENTAR getEnrolledStudents BASED ON THE CLASS ID
 
 app.get("/enrolled/:classId", async (req, res) =>{
     try {
@@ -74,6 +79,8 @@ app.get("/classes/:teacherId", async (req, res) =>{
     }
 });
 
+///////////////////////// POST ///////////////////////// 
+
 app.post("/createclass", async (req, res) => {
     const { className, teacherId, description } = req.body; 
 
@@ -86,6 +93,33 @@ app.post("/createclass", async (req, res) => {
         res.status(500).send("Error creating class: " + error.message);
     }
 });
+
+app.post("/login", async (req, res) => {
+    const { username, password_hash } = req.body;
+    console.log("Email:", username,"Passowrd:", password_hash);
+
+    try {
+        const userService = new UserService();
+        const user = await userService.login(username, password_hash);
+
+        if (user.error) {
+            return res.status(500).json({ error: user.error });
+        }
+
+        if (user.message === "User not found.") {
+            return res.status(404).json({ error: "User not found." });
+        }
+
+        if (user.message === "Wrong Password.") {
+            return res.status(401).json({ error: "Wrong Password." });
+        }
+
+        res.status(200).json({ message: "Login successful", user });
+    } catch (error) {
+        res.status(500).send("Error logging in: " + error.message);
+    }
+});
+
 
 app.listen(PORT, () =>{
     console.log("Aplicación Express corriendo...");

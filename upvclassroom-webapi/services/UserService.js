@@ -2,6 +2,65 @@ const db = require("../dataAccess/db");
 
 class UserService {
 
+    async login(username, password) {
+        try {
+            const [user] = await db.execute(
+                `SELECT user_id, username, role FROM Users WHERE username = ? AND password_hash = ?`,
+                [username, password]
+            );
+            /*
+            Para cuando bycrypt
+            const [user] = await db.execute(
+                `SELECT user_id, username, role, password_hash FROM Users WHERE username = ?`,
+                [username]
+            );
+            */
+            //console.log( await this.userExists(username));
+            if ( await this.userExists(username) === true && user.length === 0) {
+                return { message: `Wrong Password.` };
+            }
+
+            /*
+            Para cuando se use bcrypt
+            const isPasswordValid = await bcrypt.compare(password, user[0].password_hash);
+            if (!isPasswordValid) {
+                return { message: `Wrong Password.` };
+            }
+            */
+
+            if (user.length === 0) {
+                return { message: `User not found.` };
+            }
+            
+            /*Para cuando se use bcrypt
+            const { password_hash, ...userWithoutPassword } = user[0];
+            return userWithoutPassword;
+            */
+
+            return user[0];
+        } catch (error) {
+            return { error: "Error logging in" + error.message };
+        }
+    }
+
+    async userExists(username) {
+        try {
+            const [user] = await db.execute(
+                `SELECT user_id FROM Users WHERE username = ?`,
+                [username]
+            );
+
+            if (user.length === 0) {
+                console.log(`User not found.`);
+                return false;
+            }
+            //console.log(`User found.`);         
+            return true;
+        } catch (error) {
+           return false;
+        }
+    }
+
     async getTeachers() {
         try {
             const [teachers] = await db.execute(
