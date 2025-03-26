@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
+import Homepage from './components/Homepage';
+import TareaAlumno from './components/alumno/Tarea';
+import AvisoAlumno from './components/alumno/Aviso';
+import ClaseAlumno from './components/alumno/Clase';
+import CursosAlumno from './components/alumno/Cursos';
+import ClaseProfesor from './components/profesor/Clase';
+import CursosProfesor from './components/profesor/Cursos';
+import MaterialAlumno from './components/alumno/Material';
+import GestionDeAlumno from './components/profesor/Alumno';
+import VerTareaProfesor from './components/profesor/VerTarea';
+import VerAvisoProfesor from './components/profesor/VerAviso';
+import VerMaterialProfesor from './components/profesor/VerMaterial';
+import ConfigurarTareaProfesor from './components/profesor/ConfigurarTarea';
+import ConfigurarAvisoProfesor from './components/profesor/ConfigurarAviso';
+import ConfigurarMaterialProfesor from './components/profesor/ConfigurarMaterial';
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Homepage />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/cursosalumno/clasealumno" element={<ClaseAlumno />} />
+      <Route path="/cursosalumno" element={<CursosAlumno />} />
+      <Route path="/cursosprofesor/claseprofesor" element={<ClaseProfesor />} />
+      <Route path="/cursosprofesor" element={<CursosProfesor />} />
+      <Route path="/cursosprofesor/claseprofesor/vertareaprofesor/veralumno" element={<GestionDeAlumno />} />
+      <Route path="/cursosalumno/clasealumno/vertareaalumno" element={<TareaAlumno />} />
+      <Route path="/cursosalumno/clasealumno/veravisoalumno" element={<AvisoAlumno />} />
+      <Route path="/cursosalumno/clasealumno/vermaterialalumno" element={<MaterialAlumno />} />
+      <Route path="/cursosprofesor/claseprofesor/vertareaprofesor" element={<VerTareaProfesor />} />
+      <Route path="/cursosprofesor/claseprofesor/veravisoprofesor" element={<VerAvisoProfesor />} />
+      <Route path="/cursosprofesor/claseprofesor/vermaterialprofesor" element={<VerMaterialProfesor />} />
+      <Route path="/cursosprofesor/claseprofesor/configurartarea" element={<ConfigurarTareaProfesor />} />
+      <Route path="/cursosprofesor/claseprofesor/configuraraviso" element={<ConfigurarAvisoProfesor />} />
+      <Route path="/cursosprofesor/claseprofesor/configurarmaterial" element={<ConfigurarMaterialProfesor />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
