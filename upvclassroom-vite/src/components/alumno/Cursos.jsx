@@ -1,7 +1,32 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function CursosAlumno() {
+    const [auth, setAuth] = useState(false);
+    const [message, setMessage] = useState('');
+    const [name, setName] = useState('');
+
+    axios.defaults.withCredentials = true;
+    useEffect(() => {
+        axios.get('http://localhost:3001/cursosalumno')
+        .then(res => {
+            if(res.data.Status === "Success"){
+                setAuth(true)
+                setName(res.data.name)
+            }else {
+                setAuth(false)
+                setMessage(res.data.Error)
+            }
+        })
+        .then(err => console.log(err))
+    }, [])
+    const handleDelete =() => {
+        axios.get('http://localhost:3001/logout')
+        .then(res => {
+            navigate('/');
+        }).catch(err => console.log(err));
+    }
   const navigate = useNavigate();
   const verClase = () => {
       navigate('/cursosalumno/clasealumno');
@@ -14,8 +39,9 @@ function CursosAlumno() {
     return (
         
         <div>
-            <button onClick={volver}>Cerrar Sesión</button>
+            <button onClick={handleDelete}>Cerrar Sesión</button>
         <h1>Clases en Curso</h1>
+        <h2>Bienvenido, {name}</h2>
         <h3>Aquí puedes ver las clases en las que estás inscrita o inscrito</h3>
         <table>
             <thead>

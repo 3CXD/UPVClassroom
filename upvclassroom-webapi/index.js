@@ -1,53 +1,96 @@
-const express = require("express");
-const cors = require("cors");
-
-const routerApi = require("./routes");
-const requestLogger = require("./middlewares/requestLogger");
-const auth = require("./middlewares/auth");
+import express from 'express';
+import mysql from 'mysql';
+import cors from 'cors';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import cookieParser from 'cookie-parser';
+const salt = 10;
 
 const app = express();
-const PORT = 3002;
+const PORT = 3001;
 
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    methods: ["POST", "GET"],
+    credentials: true}
+));
 app.use(express.json());
+app.use(cookieParser());
 
-app.use((req, res, next) => {
-    console.log("Middleware para autenticación");
-    req.username = "usuario_x";
-    next();
-});
+const db = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: 'upvclassroom',
+    "port": 3306,
+    "waitForConnections": true,
+    "connectionLimit": 64,
+    "queueLimit": 0
+})
 
-app.use(requestLogger);
-/*
-app.use("/", auth);
-app.use("/json", auth);
-*/
-app.use((req, res, next) => {
-    try {
-        next();
+const verifyUser = (req, res, next) => {
+    const token = req.cookies.token;
+    if(!token){
+        return res.json({Error: "You are not authenticated"})
+    } else {
+        jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+            if(err) {
+                return res.json({Error: "Token is not ok"});
+            } else {
+                req.name = decoded.name;
+                next();
+            }
+        })
     }
-    catch (err) {
-        res.status(500).json({mesage: "error"});
-    }
-    console.log("Este middleware se debería ejecutar al último");
-});
+}
 
-app.get("/", (req, res) =>{
-    console.log("ejecutando el handing del root app");
-    res.send("Hola desde Express")
-});
+app.get('/cursosalumno',verifyUser, (req, res) => {
+    return res.json({Status: "Success", name: req.name});
+})
 
-app.get("/json", (req, res) => {
-    const resObj = {
-        id: 23435,
-        nombre: "Nombre del object",
-        descripcion: "Descripción del object"
-    };
-    res.json(resObj);
-});
+app.post('/register', (req, res) => {
+    const sql = "Insert INTO Users (username, email, password_hash) values (?)";
+    bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
+        if(err) return res.json({Error: "Error for hasshing password"})
+        const values = [
+            req.body.name,
+            req.body.email,
+            hash
+        ]
+        db.query(sql, [values], (err, result) => {
+            if(err) return res.json({Error: "Inserting data Error in server"});
+            return res.json({Status: "Success"});
+        })
+    })
+})
 
-routerApi(app);
+app.post('/login', (req, res) => {
+    const sql = 'SELECT * FROM Users WHERE email = ?';
+    db.query(sql, [req.body.email], (err, data) => {
+        if(err ) return res.json({Error: "Login error in server"});
+        if(data.length > 0) {
+            bcrypt.compare(req.body.password.toString(), data[0].password_hash, (err, response) => {
+                if(err) return res.json({Error: "Password compare error"});
+                if(response){
+                    const name = data[0].username;
+                    const token = jwt.sign({name}, "jwt-secret-key", {expiresIn: '2m'});
+                    res.cookie('token', token);
+                    return res.json({Status: "Success"});
+                } else {
+                    return res.json({Error: "Password not matched"});
+                }
+            })
+        }else {
+            return res.json({Error: "No email existed"});
+        }
+    })
+})
 
+app.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    return res.json({Status: "Success"});
+
+})
 
 app.listen(PORT, () => {
     console.log("Aplicación Express corriendo...");
