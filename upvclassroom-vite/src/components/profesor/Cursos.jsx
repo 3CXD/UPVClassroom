@@ -1,7 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+
 
 function CursosProfesor() {
+
+  const location = useLocation();
+  const userId = location.state?.user_id; //El id del usuario que se logueó, para jalar cosas luego
   const navigate = useNavigate();
   const verClase = () => {
       navigate('/cursosprofesor/claseprofesor');
@@ -9,6 +14,8 @@ function CursosProfesor() {
   const volver = () => {
       navigate('/');
   };
+  console.log("User ID:", userId);
+
 
 
     return (

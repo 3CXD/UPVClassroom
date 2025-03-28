@@ -2,11 +2,11 @@ const db = require("../dataAccess/db");
 
 class UserService {
 
-    async login(username, password) {
+    async login(email, password) {
         try {
             const [user] = await db.execute(
-                `SELECT user_id, username, role FROM Users WHERE username = ? AND password_hash = ?`,
-                [username, password]
+                `SELECT user_id, username, role FROM Users WHERE email = ? AND password_hash = ?`,
+                [email, password]
             );
             /*
             Para cuando bycrypt
@@ -16,7 +16,7 @@ class UserService {
             );
             */
             //console.log( await this.userExists(username));
-            if ( await this.userExists(username) === true && user.length === 0) {
+            if ( await this.userExists(email) === true && user.length === 0) {
                 return { message: `Wrong Password.` };
             }
 
@@ -43,11 +43,11 @@ class UserService {
         }
     }
 
-    async userExists(username) {
+    async userExists(email) {
         try {
             const [user] = await db.execute(
-                `SELECT user_id FROM Users WHERE username = ?`,
-                [username]
+                `SELECT user_id FROM Users WHERE email = ?`,
+                [email]
             );
 
             if (user.length === 0) {

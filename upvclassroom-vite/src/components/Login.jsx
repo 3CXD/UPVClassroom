@@ -14,18 +14,26 @@ function Login() {
     const handleSubmit = (event) => {
       event.preventDefault();
       axios.post('http://localhost:3001/login', values)
-      .then(res => {
-        if(res.data.Status === "Success") {
-          navigate('/cursosalumno')
-        }else {
-          alert(res.data.Error);
-        }
-      })
-      .then(err => console.log(err));
+        .then(res => {
+          if (res.status === 200 && res.data.message === "Login successful") {
+            const role = res.data.user.role;
+            if (role === "student") {
+              navigate('/cursosalumno', { state: { user_id: res.data.user.user_id } });
+            } else if (role === "teacher") {
+              navigate('/cursosprofesor', { state: { user_id: res.data.user.user_id } });
+            } else {
+              alert("Vete a la verga hermano, ese rol que");
+            }
+          } else {
+            alert(res.data.error || "An error occurred during login.");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert(err.response.data.error); //TODO: PUEDES METERLE SWALERT AQUÍ CON EL MENSAJE DE ERROR (QUEDARIA CHIDOTE)
+        });
     }
     axios.defaults.withCredentials = true;
-
-
 
     return (
         <div>

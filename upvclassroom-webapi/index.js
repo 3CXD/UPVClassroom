@@ -1,19 +1,25 @@
 const express = require("express");
 const cors = require("cors");
-
-//const cors = require("cors");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+require("dotenv").config();
 
 const EnrollmentService = require("./services/EnrollmentService");
 const UserService = require("./services/UserService");
 const ClassService = require("./services/ClassService");
-const e = require("express");
 
 const app = express();
-const PORT = 3002;
+const PORT = 3001;
 const saltRounds = 10;
 
+app.use(cookieParser());
 app.use(express.json())
-//app.use(cors)
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    methods: ["POST", "GET"],
+    credentials: true}
+));
 
 ///////////////////////// GET ///////////////////////// 
 
@@ -95,12 +101,12 @@ app.post("/createclass", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    const { username, password_hash } = req.body;
-    console.log("Email:", username,"Passowrd:", password_hash);
+    const { email, password } = req.body;
+    console.log("Email:", email,"Passowrd:", password);
 
     try {
         const userService = new UserService();
-        const user = await userService.login(username, password_hash);
+        const user = await userService.login(email, password);
 
         if (user.error) {
             return res.status(500).json({ error: user.error });
@@ -114,12 +120,23 @@ app.post("/login", async (req, res) => {
             return res.status(401).json({ error: "Wrong Password." });
         }
 
+        const token = jwt.sign(
+            { id: user.user_id, username: user.username, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "2m" }
+        );
+
+        res.cookie("token", token);
         res.status(200).json({ message: "Login successful", user });
     } catch (error) {
         res.status(500).send("Error logging in: " + error.message);
     }
 });
 
+app.post('/logout', (req, res) => {
+    res.clearCookie('token'); // Clear the JWT token cookie
+    return res.status(200).json({ message: 'Logout successful' });
+});
 
 app.listen(PORT, () =>{
     console.log("Aplicación Express corriendo...");
