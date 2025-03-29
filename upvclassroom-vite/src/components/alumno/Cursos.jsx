@@ -22,7 +22,7 @@ function CursosAlumno() {
         .then(err => console.log(err))
     }, [])
     const handleDelete =() => {
-        axios.get('http://localhost:3001/logout')
+        axios.post('http://localhost:3001/logout')
         .then(res => {
             navigate('/');
         }).catch(err => console.log(err));

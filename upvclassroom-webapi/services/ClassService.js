@@ -2,14 +2,19 @@ const db = require("../dataAccess/db");
 
 class ClassService {
 
-    async createClass(className, teacherId, description = null) {
+    async createClass(className, teacherId, description = null, progam, semester)  {
+        console.log("Creating class with data:", className, teacherId, description, progam, semester);
         try {
             const [result] = await db.execute(
-                `INSERT INTO Classes (class_name, teacher_id, description) VALUES (?, ?, ?)`,
-                [className, teacherId, description]
+                `INSERT INTO Classes (class_name, description, teacher_id, progam, semester) VALUES (?, ?, ?, ?, ?)`,
+                [className, description, teacherId, progam, semester]
             );
-            console.log(`Inserted class with ID: ${result.insertId}`);
-            return { class_id: result.insertId, class_name: className, description };
+            if (result.affectedRows === 0) {
+                console.log("Failed to create class.");
+                return { error: "Failed to create class." };
+            }
+            console.log(`Inserted class with ID: ${result.insert_Id}`);
+            return { class_id: result.insert_Id, class_name: className, description };
         } catch (error) {
             console.error("Error creating class:", error);
             return { error: "Error creating class." };
@@ -37,7 +42,6 @@ class ClassService {
             }
 
             if (role[0].role == "teacher") {
-                console.log('entre al teacher');
                 classes = await this.getTeacherClasses(Id);
             }
             

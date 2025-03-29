@@ -27,18 +27,6 @@ app.get("/", (req, res) =>{
     res.send("Hola desde Express")
 });
 
-//ALUMNOS DE UNA CLASE
-app.get("/enrolled/:classId", async (req, res) =>{
-    try {
-        const classId = req.params.classId;
-        const enrollmentService = new EnrollmentService();
-        const students = await enrollmentService.getEnrolledStudents(classId);
-        res.json(students);
-    } catch (error) {
-        console.error("Error fetching enrolled students:", error);
-        res.status(500).send("Error fetching enrolled students" + error.message);
-    }
-});
 
 //LOGEARSE
 app.post("/login", async (req, res) => {
