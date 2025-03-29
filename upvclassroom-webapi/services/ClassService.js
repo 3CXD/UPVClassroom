@@ -16,15 +16,29 @@ class ClassService {
         }
     }
 
-    async getClasses() {
+    async getClasses(Id) {
+        let classes = [];
         try {
-            const [classes] = await db.execute(
-                `SELECT class_id, class_name FROM Classes`
+            const [role] = await db.execute(
+                `SELECT role FROM Users WHERE user_id = ?`,
+                [Id]
             );
+            /*
+            console.log(role);
+            console.log(role[0].role);
+            */
+            if (role.length === 0){
+                console.log(`No user found with ID ${Id}.`);
+                return { message: `No user found with ID ${Id}.` }; 
+            }
 
-            if (classes.length === 0) {
-                console.log(`No classes found.`);
-                return { message: `No classes found.` };
+            if (role[0].role === "student") {
+                classes = await this.getStudentClasses(Id);
+            }
+
+            if (role[0].role == "teacher") {
+                console.log('entre al teacher');
+                classes = await this.getTeacherClasses(Id);
             }
             
             return classes;
@@ -50,6 +64,25 @@ class ClassService {
         } catch (error) {
             console.error("Error fetching classes:", error);
             return { error: "Error fetching classes." };
+        }
+    }
+
+    async getStudentClasses(studentId) {
+        try {
+            const [classes] = await db.execute(
+                `SELECT c.class_id, c.class_name FROM Classes c
+                 JOIN Enrollment e ON c.class_id = e.class_id
+                 WHERE e.student_id = ?`,
+                [studentId]
+            );
+            if (classes.length === 0) {
+                console.log(`No classes found for student with ID ${studentId}.`);
+                return { message: `No classes found for student with ID ${studentId}.` };
+            }
+            return classes;
+        } catch (error) {
+            console.error("Error fetching classes:", error);
+            return { error: "Error fetching classes." };            
         }
     }
 
