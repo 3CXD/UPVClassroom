@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -17,6 +17,23 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+
+.columnasHompeage{
+  flex-direction: row;
+  align-items: center;
+  height: auto;
+  margin:0%;
+  width: 100%;
+}
+
+.columnaIzquierdaHomepage {
+  width: 60%;
+}
+
+.columnaDerechaHomepage {
+  width: 40%;
+}
+
 
 @keyframes logo-spin {
   from {

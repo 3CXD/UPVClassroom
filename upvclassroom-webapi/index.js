@@ -3,6 +3,7 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const dotenv = require("dotenv");
 require("dotenv").config();
 
 const EnrollmentService = require("./services/EnrollmentService");
@@ -15,6 +16,7 @@ const PORT = 3001;
 const saltRounds = 10;
 
 app.use(cookieParser());
+dotenv.config();
 app.use(express.json())
 app.use(cors({
     origin: ["http://localhost:5173"],
@@ -108,10 +110,11 @@ app.post("/login", async (req, res) => {
     try {
         const userService = new UserService();
         const user = await userService.login(email, password);
+        console.log(user.error);
 
-        if (user.error) {
+        /*if (user.error) {
             return res.status(500).json({ error: user.error });
-        }
+        }*/
 
         if (user.message === "User not found.") {
             return res.status(404).json({ error: "User not found." });
@@ -128,9 +131,13 @@ app.post("/login", async (req, res) => {
         );
 
         res.cookie("token", token);
+        console.log("ashuda");
         res.status(200).json({ message: "Login successful", user });
     } catch (error) {
         res.status(500).send("Error logging in: " + error.message);
+        console.log(error.message);
+        console.log("JWT Secret:", process.env.JWT_SECRET);
+
     }
 });
 

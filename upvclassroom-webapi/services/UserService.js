@@ -1,6 +1,5 @@
 const db = require("../dataAccess/db");
 
-import db from '../dataAccess/db.js';
 class UserService {
 
     async login(email, password) {
@@ -37,6 +36,8 @@ class UserService {
             const { password_hash, ...userWithoutPassword } = user[0];
             return userWithoutPassword;
             */
+           //console.log("SQL result:", user);
+           //console.log("SQL result:", user[0]);
 
             return user[0];
         } catch (error) {
