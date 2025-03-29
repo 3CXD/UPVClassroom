@@ -1,9 +1,12 @@
-const mysql = require("mysql2/promise");
-const dbConfig = require("./dbConfig.json");
+//const mysql = require("mysql2");
+//const dbConfig = require("./dbConfig.json");
+
+import mysql from 'mysql2';
+//import dbConfig from './dbConfig2.json' assert {type: 'json'};
+import fs from 'fs';
+const dbConfig = JSON.parse(fs.readFileSync('./dataAccess/dbConfig2.json', 'utf8'));
 
 const pool = mysql.createPool(dbConfig);
-//const promisePool = pool.promise();
+const promisePool = pool.promise();
 
-module.exports = {
-    query: (sql, params) => pool.execute(sql, params)
-};
+export default {promisePool};

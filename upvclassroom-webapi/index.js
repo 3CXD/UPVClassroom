@@ -4,18 +4,20 @@ import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
-const salt = 10;
+import EnrollmentService from './services/EnrollmentService.js';
+import UserService from './services/UserService.js';
+import ClassService from './services/ClassService.js';
 
+const salt = 10;
 const app = express();
 const PORT = 3001;
-
-app.use(cors({
-    origin: ["http://localhost:5173"],
-    methods: ["POST", "GET"],
-    credentials: true}
-));
-app.use(express.json());
-app.use(cookieParser());
+//const EnrollmentService = require("./services/EnrollmentService");
+//const UserService = require("./services/UserService");
+//const ClassService = require("./services/ClassService");
+//const e = require("express");
+//const express = require("express");
+//const cors = require("cors");
+const saltRounds = 10;
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -44,10 +46,24 @@ const verifyUser = (req, res, next) => {
     }
 }
 
+
+app.use(express.json());
+app.use(cookieParser());
+
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    methods: ["POST", "GET"],
+    credentials: true}
+));
+
+//app.use(cors)
+
+// (CESAR) Muestra las clases del estudiante loggeado
 app.get('/cursosalumno',verifyUser, (req, res) => {
     return res.json({Status: "Success", name: req.name});
 })
 
+// (CESAR) REgistra un nuevo usuario en la base de datos
 app.post('/register', (req, res) => {
     const sql = "Insert INTO Users (username, email, password_hash) values (?)";
     bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
@@ -64,6 +80,83 @@ app.post('/register', (req, res) => {
     })
 })
 
+// (WALLE) Obtiene los estudientes de una clase
+app.get("/enrolled/:classId", async (req, res) =>{
+    try {
+        const classId = req.params.classId;
+        const enrollmentService = new EnrollmentService();
+        const students = await enrollmentService.getEnrolledStudents(classId);
+        res.json(students);
+    } catch (error) {
+        console.error("Error fetching enrolled students:", error);
+        res.status(500).send("Error fetching enrolled students" + error.message);
+    }
+});
+
+// (WALLE) Obtiene los profesores
+app.get("/teachers", async (req, res) =>{
+    try {
+        const userService = new UserService();
+        const teachers = await userService.getTeachers();
+        res.json(teachers);
+    } catch (error) {
+        console.error("Error fetching teachers:", error);
+        res.status(500).send("Error fetching teachers" + error.message);
+    }
+});
+
+// (WALLE) Obtiene todos los estudiantes
+app.get("/students", async (req, res) =>{
+    try {
+        const userService = new UserService();
+        const students = await userService.getStudents();
+        res.json(students);
+    } catch (error) {
+        console.error("Error fetching students:", error);
+        res.status(500).send("Error fetching students" + error.message);
+    }
+});
+
+// (WALLE) Ver las clases que tiene el alumno
+app.get("/classes", async (req, res) =>{
+    try {
+        const classService = new ClassService();
+        const classes = await classService.getClasses();
+        res.json(classes);
+    } catch (error) {
+        console.error("Error fetching classes:", error);
+        res.status(500).send("Error fetching classes" + error.message);
+    }
+});
+
+// (WALLE) Obtiene el profesor de una clase
+app.get("/classes/:teacherId", async (req, res) =>{
+    try {
+        const teacherId = req.params.teacherId;
+        const classService = new ClassService();
+        const classes = await classService.getTeacherClasses(teacherId);
+        res.json(classes);
+    } catch (error) {
+        console.error("Error fetching classes:", error);
+        res.status(500).send("Error fetching classes" + error.message);
+    }
+});
+
+// (WALLE) Crear una clase nueva
+app.post("/createclass", async (req, res) => {
+    const { className, teacherId, description } = req.body; 
+
+    try {
+        const classService = new ClassService();
+        const result = await classService.createClass(className, teacherId, description);
+        res.json(result);
+    } catch (error) {
+        console.error("Error creating class:", error);
+        res.status(500).send("Error creating class: " + error.message);
+    }
+});
+
+// (CESAR) Login de usuario, falta verificar qué rol tiene
 app.post('/login', (req, res) => {
     const sql = 'SELECT * FROM Users WHERE email = ?';
     db.query(sql, [req.body.email], (err, data) => {
@@ -86,12 +179,14 @@ app.post('/login', (req, res) => {
     })
 })
 
+// (CESAR) Manejar el logout del usuario
 app.get('/logout', (req, res) => {
     res.clearCookie('token');
     return res.json({Status: "Success"});
 
 })
 
-app.listen(PORT, () => {
+// (CESAR) Comprobar si la eplicación está corriendo
+app.listen(PORT, () =>{
     console.log("Aplicación Express corriendo...");
-})
+});

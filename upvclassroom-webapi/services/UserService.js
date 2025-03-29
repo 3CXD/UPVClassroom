@@ -1,35 +1,103 @@
-const bcrypt = require('bcrypt');
-const pool = require('../dataAccess/db');
 
-const saltRounds = 12; // Work factor para bcrypt
-
+import db from '../dataAccess/db.js';
 class UserService {
-    static async registerUser(nombre, apellidos, username, password) {
-        try {
-            // Validar si el usuario ya existe
-            const [userExists] = await pool.query(
-                'SELECT id FROM usuarios WHERE username = ?', [username]
-            );
 
-            if (userExists.length > 0) {
-                return { success: false, message: "El username ya existe." };
+    async login(username, password) {
+        try {
+            const [user] = await db.execute(
+                `SELECT user_id, username, role FROM Users WHERE username = ? AND password_hash = ?`,
+                [username, password]
+            );
+            /*
+            Para cuando bycrypt
+            const [user] = await db.execute(
+                `SELECT user_id, username, role, password_hash FROM Users WHERE username = ?`,
+                [username]
+            );
+            */
+            //console.log( await this.userExists(username));
+            if ( await this.userExists(username) === true && user.length === 0) {
+                return { message: `Wrong Password.` };
             }
 
-            // Encriptar contraseña
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            /*
+            Para cuando se use bcrypt
+            const isPasswordValid = await bcrypt.compare(password, user[0].password_hash);
+            if (!isPasswordValid) {
+                return { message: `Wrong Password.` };
+            }
+            */
 
-            // Insertar usuario en la base de datos
-            await pool.query(
-                'INSERT INTO usuarios (nombre, apellidos, username, password, tipo_usuario, activo) VALUES (?, ?, ?, ?, ?, ?)',
-                [nombre, apellidos || null, username, hashedPassword, 'user', 1]
-            );
+            if (user.length === 0) {
+                return { message: `User not found.` };
+            }
+            
+            /*Para cuando se use bcrypt
+            const { password_hash, ...userWithoutPassword } = user[0];
+            return userWithoutPassword;
+            */
 
-            return { success: true, message: "Usuario registrado exitosamente." };
+            return user[0];
         } catch (error) {
-            console.error(error);
-            return { success: false, message: "Error al registrar el usuario." };
+            return { error: "Error logging in" + error.message };
         }
     }
+
+    async userExists(username) {
+        try {
+            const [user] = await db.execute(
+                `SELECT user_id FROM Users WHERE username = ?`,
+                [username]
+            );
+
+            if (user.length === 0) {
+                console.log(`User not found.`);
+                return false;
+            }
+            //console.log(`User found.`);         
+            return true;
+        } catch (error) {
+           return false;
+        }
+    }
+
+    async getTeachers() {
+        try {
+            const [teachers] = await db.execute(
+                `SELECT user_id, username FROM Users WHERE role = 'teacher'`
+            );
+
+            if (teachers.length === 0) {
+                console.log(`No teachers found.`);
+                return { message: `No teachers found.` };
+            }
+            
+            return teachers;
+        } catch (error) {
+            console.error("Error fetching teachers:", error);
+            return { error: "Error fetching teachers." };
+        }
+    }
+
+    async getStudents() {
+        try {
+            const [students] = await db.execute(
+                `SELECT user_id, username FROM Users WHERE role = 'student'`
+            );
+
+            if (students.length === 0) {
+                console.log(`No students found.`);
+                return { message: `No students found.` };
+            }
+            
+            return students;
+        } catch (error) {
+            console.error("Error fetching students:", error);
+            return { error: "Error fetching students." };
+        }
+    }
+
+
 }
 
-module.exports = UserService;
+export default {UserService};
