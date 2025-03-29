@@ -15,7 +15,7 @@ class ClassService {
             return { error: "Error creating class." };
         }
     }
-
+//Pequeño cambibio
     async getClasses() {
         try {
             const [classes] = await db.execute(
