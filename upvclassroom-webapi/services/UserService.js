@@ -1,5 +1,6 @@
 const db = require("../dataAccess/db");
 
+import db from '../dataAccess/db.js';
 class UserService {
 
     async login(email, password) {

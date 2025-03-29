@@ -9,6 +9,7 @@ const EnrollmentService = require("./services/EnrollmentService");
 const UserService = require("./services/UserService");
 const ClassService = require("./services/ClassService");
 
+const salt = 10;
 const app = express();
 const PORT = 3001;
 const saltRounds = 10;
