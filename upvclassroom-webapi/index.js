@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 require("dotenv").config();
-const routerApi = require("./routes");
+const routerApi = require("./routes"); //TODO: CREAR RUTAS POR FIXEADAS
+const path = require("path");
 
 const EnrollmentService = require("./services/EnrollmentService");
 const UserService = require("./services/UserService");
@@ -24,6 +25,7 @@ app.use(cors({
     methods: ["POST", "GET"],
     credentials: true
 }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get("/", (req, res) => {
     console.log("ejecutando el handing del root app");

@@ -3,3 +3,7 @@ package-lock.json
 dataAccess/dbConfig.json
 seeders/db.sh
 .env
+<<<<<<< HEAD
+=======
+uploads/*
+>>>>>>> Merge
