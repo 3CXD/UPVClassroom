@@ -4,45 +4,78 @@ import { useNavigate, useLocation } from 'react-router-dom';
 function ClaseProfesor() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { class_id, class_name, description, progam, teacher_Id} = location.state || {};
+  const { class_id, class_name, description, progam, teacher_Id } = location.state || {};
 
   const [announcements, setAnnouncements] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [newAnnouncement, setNewAnnouncement] = useState({
-    title: '',
-    message: '',
-  });
+  const [newAnnouncement, setNewAnnouncement] = useState({ title: '', message: '' });
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [showStudentModal, setShowStudentModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const volver = () => {
     navigate('/cursosprofesor/', { state: { user_id: teacher_Id } });
   };
 
-  console.log('TeacherId', teacher_Id);
-
   useEffect(() => {
     const fetchAnnouncements = async () => {
-        try {
-            const response = await fetch(`http://localhost:3001/classes/${class_id}/announcements`);
-            const data = await response.json();
-            if (response.ok && Array.isArray(data)) {
-                setAnnouncements(data);
-            } else {
-                setAnnouncements([]);
-                setError(data.message || 'Failed to fetch announcements');
-            }
-        } catch (err) {
-            console.error('Error fetching announcements:', err);
-            setAnnouncements([]);
-            setError('Error fetching announcements');
+      try {
+        const response = await fetch(`http://localhost:3001/classes/${class_id}/announcements`);
+        const data = await response.json();
+        if (response.ok && Array.isArray(data)) {
+          setAnnouncements(data);
+        } else {
+          setAnnouncements([]);
+          setError(data.message || 'Failed to fetch announcements');
         }
+      } catch (err) {
+        console.error('Error fetching announcements:', err);
+        setAnnouncements([]);
+        setError('Error fetching announcements');
+      }
     };
 
     if (class_id) {
-        fetchAnnouncements();
+      fetchAnnouncements();
     }
-}, [class_id]);
+  }, [class_id]);
+
+  const fetchStudents = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/user/students');
+      const data = await response.json();
+      if (response.ok && Array.isArray(data)) {
+        setStudents(data);
+      } else {
+        setStudents([]);
+        setError(data.message || 'Failed to fetch students');
+      }
+    } catch (err) {
+      console.error('Error fetching students:', err);
+      setError('Error fetching students');
+    }
+  };
+
+  const handleEnrollStudent = async (studentId) => {
+    try {
+      const response = await fetch('http://localhost:3001/enroll/addtoClass', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentId, classId: class_id }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setSuccessMessage(`Student with ID ${studentId} successfully enrolled.`);
+      } else {
+        setSuccessMessage(data.error || 'Failed to enroll student.');
+      }
+    } catch (err) {
+      console.error('Error enrolling student:', err);
+      setSuccessMessage('Error enrolling student.');
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -102,7 +135,6 @@ function ClaseProfesor() {
 
       <h2>Anuncios</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-        {/* Add Announcement Rectangle */}
         <div
           style={{
             border: '1px solid black',
@@ -116,42 +148,81 @@ function ClaseProfesor() {
           <h3>+ Agregar Anuncio</h3>
         </div>
 
-        {/* Announcement Rectangles */}
         {announcements.length > 0 ? (
           announcements.map((announcement) => (
-              <div
-                  key={announcement.announcement_id}
-                  style={{
-                      border: '1px solid black',
-                      padding: '20px',
-                      width: '200px',
-                      textAlign: 'center',
-                  }}
-              >
-                  <h3>{announcement.title}</h3>
-                  <p>{announcement.message}</p>
-                  {announcement.files && announcement.files.length > 0 && (
-                      <div>
-                          <h4>Archivos:</h4>
-                          <ul>
-                              {announcement.files.map((file, index) => (
-                                  <li key={index}>
-                                    <a href={`http://localhost:3001/${file.file_path}`} target="_blank" rel="noopener noreferrer">
-                                        {file.original_name}
-                                    </a>
-                                  </li>
-                              ))}
-                          </ul>
-                      </div>
-                  )}
-              </div>
+            <div
+              key={announcement.announcement_id}
+              style={{
+                border: '1px solid black',
+                padding: '20px',
+                width: '200px',
+                textAlign: 'center',
+              }}
+            >
+              <h3>{announcement.title}</h3>
+              <p>{announcement.message}</p>
+              {announcement.files && announcement.files.length > 0 && (
+                <div>
+                  <h4>Archivos:</h4>
+                  <ul>
+                    {announcement.files.map((file, index) => (
+                      <li key={index}>
+                        <a
+                          href={`http://localhost:3001/${file.file_path}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {file.original_name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           ))
         ) : (
           <p>No announcements available.</p>
         )}
       </div>
 
-      {/* Add Announcement Form */}
+      <button onClick={() => { setShowStudentModal(true); fetchStudents(); }}>
+        Enroll Students
+      </button>
+
+      {showStudentModal && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'white',
+            padding: '20px',
+            border: '1px solid black',
+            zIndex: 1000,
+          }}
+        >
+          <h2>Enroll Students</h2>
+          <ul>
+            {students.map((student) => (
+              <li key={student.user_id} style={{ marginBottom: '10px' }}>
+                {student.username}
+                <button
+                  style={{ marginLeft: '10px' }}
+                  onClick={() => handleEnrollStudent(student.user_id)}
+                >
+                  Enroll
+                </button>
+              </li>
+            ))}
+          </ul>
+          <button onClick={() => setShowStudentModal(false)}>Close</button>
+          {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+        </div>
+      )}
+
       {showForm && (
         <div
           style={{

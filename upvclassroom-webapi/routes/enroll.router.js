@@ -30,6 +30,10 @@ router.post("/addtoClass", async (req, res) => {
             console.log("Failed to enroll student.");
             return res.status(400).json({ error: result.error });
         }
+        if (result.error && result.error.includes("already enrolled")) {
+            console.log("Student is already enrolled.");
+            return res.status(409).json({ error: result.error });
+        }
         res.status(201).json(result);
     } catch (error) {
         console.error("Error enrolling student:", error);
