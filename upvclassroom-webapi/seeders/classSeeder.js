@@ -20,15 +20,14 @@ async function seedClasses(db) {
                 description: "Matematicas para Ingenieria.",
                 teacher_id: teacherId,
                 progam: "Ingenieria en Tecnologias de la Informacion",
-                class_code: "ITI-271360",
                 semester: "8",
             },
         ];
 
         for (const cls of classes) {
             const [result] = await db.execute(
-                `INSERT INTO Classes (class_name, description, teacher_id, progam, class_code, semester) VALUES (?, ?, ?, ?, ?, ?)`,
-                [cls.class_name, cls.description, cls.teacher_id, cls.progam, cls.class_code, cls.semester]
+                `INSERT INTO Classes (class_name, description, teacher_id, progam, semester) VALUES (?, ?, ?, ?, ?)`,
+                [cls.class_name, cls.description, cls.teacher_id, cls.progam, cls.semester]
             );
             console.log(`Inserted class with ID: ${result.insertId}`);
         }

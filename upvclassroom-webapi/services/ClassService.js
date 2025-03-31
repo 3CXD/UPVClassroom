@@ -2,12 +2,12 @@ const db = require("../dataAccess/db");
 
 class ClassService {
 
-    async createClass(className, program, groupCode, semester, description, teacherId) {
-        console.log("Creating class with data:", className, program, groupCode, semester, description, teacherId);
+    async createClass(className, teacherId, description, program, semester) {
+        console.log("Creating class with data:", className, program, semester, description, teacherId);
         try {
             const [result] = await db.execute(
-                `INSERT INTO Classes (class_name, progam, class_code, semester, description, teacher_id) VALUES (?, ?, ?, ?, ?, ?)`,
-                [className, program, groupCode, semester, description, teacherId]
+                `INSERT INTO Classes (class_name, progam, semester, description, teacher_id) VALUES (?, ?, ?, ?, ?)`,
+                [className, program, semester, description, teacherId]
             );
             if (result.affectedRows === 0) {
                 console.log("Failed to create class.");

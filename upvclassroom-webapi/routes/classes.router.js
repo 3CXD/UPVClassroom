@@ -48,6 +48,7 @@ router.get("/:Id/announcements", async (req, res) => {
 router.post("/createclass", async (req, res) => {
     const { className, teacher_Id, description, progam, semester } = req.body; 
     const teacherId = teacher_Id;
+    console.log(semester);
 
     try {
         const classService = new ClassService();
