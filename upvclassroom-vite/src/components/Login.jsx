@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import homepageBackground from '../assets/homepageBackground.png';
+import logo from '../assets/UPVClassroomLogo.png';
 
 function Login() {
   const navigate = useNavigate();
@@ -37,23 +39,34 @@ function Login() {
     axios.defaults.withCredentials = true;
 
     return (
-        <div>
-            <button onClick={cancelar}>Cancelar</button>
-            <h1>Iniciar Sesión</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                <label htmlFor="email">Correo electrónico</label>
-                <input required type="email" placeholder="Ingresa tu correo electrónico" name="email"
-                onChange={e => setValues({...values, email: e.target.value})} className="form-control rounded~0" />
+          <div className='columnasHomepage'>
+            <div className='columnaIzquierdaHomepage'>
+              <img src={homepageBackground} alt="Background" />
+            </div>
+            <div className='columnaDerechaHomepage'>
+              <div className="espacioEnBlanco">
+                  <button className="btnCancelarLogin" onClick={cancelar}>Cancelar</button>
                 </div>
-                <div>
-                    <label htmlFor="password">Contraseña</label>
-                    <input required type="password" placeholder="Ingresa tu contraseña" name="password"
-                    onChange={e=> setValues({...values, password: e.target.value})} className='form-control rounded~0' />
-                </div>
-                <button type="submit" className="btn btn-success w-100 rounded-0">Iniciar Sesión</button>
-            </form>
-        </div>
+              <div className='cuadroBlancoHomepage'>
+                <img src={logo} alt="Logo" className='logoHomepage' />
+                <h1>Iniciar Sesión</h1>
+                <form className="formularioLogin" onSubmit={handleSubmit}>
+                    <div className="form-group">
+                    <label htmlFor="email">Correo electrónico</label>
+                    <input required type="email" placeholder="Ingresa tu correo electrónico" name="email"
+                    onChange={e => setValues({...values, email: e.target.value})} className="textField" />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Contraseña</label>
+                        <input required type="password" placeholder="Ingresa tu contraseña" name="password"
+                        onChange={e=> setValues({...values, password: e.target.value})} className='textField' />
+                    </div>
+                    <button type="submit" className="loginButton">Iniciar Sesión</button>
+                </form>
+              </div>
+              <div className="espacioEnBlanco"></div>
+            </div>
+          </div>
     );
 }
 
