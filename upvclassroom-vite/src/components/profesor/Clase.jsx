@@ -42,9 +42,9 @@ function ClaseProfesor() {
     }
   }, [class_id]);
 
-  const fetchStudents = async () => {
+  const fetchStudents = async (searchQuery = '') => {
     try {
-      const response = await fetch('http://localhost:3001/user/students');
+      const response = await fetch(`http://localhost:3001/user/students?search=${searchQuery}`);
       const data = await response.json();
       if (response.ok && Array.isArray(data)) {
         setStudents(data);
@@ -186,7 +186,7 @@ function ClaseProfesor() {
         )}
       </div>
 
-      <button onClick={() => { setShowStudentModal(true); fetchStudents(); }}>
+      <button onClick={() => setShowStudentModal(true)}>
         Enroll Students
       </button>
 
@@ -201,21 +201,45 @@ function ClaseProfesor() {
             padding: '20px',
             border: '1px solid black',
             zIndex: 1000,
+            width: '400px',
           }}
         >
           <h2>Enroll Students</h2>
+          <input
+            type="text"
+            placeholder="Search by username"
+            onChange={(e) => {
+              const searchQuery = e.target.value.trim();
+              if (searchQuery) {
+                fetchStudents(searchQuery);
+              } else {
+                setStudents([]);
+              }
+            }}
+            style={{
+              width: '100%',
+              padding: '10px',
+              marginBottom: '20px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+            }}
+          />
           <ul>
-            {students.map((student) => (
-              <li key={student.user_id} style={{ marginBottom: '10px' }}>
-                {student.username}
-                <button
-                  style={{ marginLeft: '10px' }}
-                  onClick={() => handleEnrollStudent(student.user_id)}
-                >
-                  Enroll
-                </button>
-              </li>
-            ))}
+            {students.length > 0 ? (
+              students.map((student) => (
+                <li key={student.user_id} style={{ marginBottom: '10px' }}>
+                  {student.username}
+                  <button
+                    style={{ marginLeft: '10px' }}
+                    onClick={() => handleEnrollStudent(student.user_id)}
+                  >
+                    Enroll
+                  </button>
+                </li>
+              ))
+            ) : (
+              <p>No students found. Start typing to search.</p>
+            )}
           </ul>
           <button onClick={() => setShowStudentModal(false)}>Close</button>
           {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}

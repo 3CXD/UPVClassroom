@@ -16,12 +16,11 @@ function CursosProfesor() {
   });
   const [error, setError] = useState(null);
 
-  const handleDelete =() => {
-    axios.post('http://localhost:3001/logout')
-    .then(res => {
-        navigate('/');
-    }).catch(err => console.log(err));
-}
+  const handleDelete = () => {
+    fetch('http://localhost:3001/logout', { method: 'POST' })
+        .then(() => navigate('/'))
+        .catch((err) => console.error('Error logging out:', err));
+  };
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -71,17 +70,13 @@ function CursosProfesor() {
     }
   };
 
-  const volver = () => {
-    navigate('/');
-  };
-
   const verClase = (clase, teacher_Id) => {
     navigate('/cursosprofesor/claseprofesor', { state: { ...clase, teacher_Id } });
   };
 
   return (
     <div>
-      <button onClick={volver}>Cerrar Sesión</button>
+      <button onClick={handleDelete}>Cerrar Sesión</button>
       <h1>Hola, AgregarUsernameAqui</h1>  
       <h3>Aquí puedes ver las clases que impartes</h3>
 

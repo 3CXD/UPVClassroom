@@ -79,17 +79,18 @@ class UserService {
         }
     }
 
-    async getStudents() {
+    async getStudents(search = '') {
         try {
             const [students] = await db.execute(
-                `SELECT user_id, username FROM Users WHERE role = 'student'`
+                `SELECT user_id, username FROM Users WHERE role = 'student' AND username LIKE ?`,
+                [`%${search}%`]
             );
 
             if (students.length === 0) {
                 console.log(`No students found.`);
-                return { message: `No students found.` };
+                return [];
             }
-            
+
             return students;
         } catch (error) {
             console.error("Error fetching students:", error);
@@ -97,6 +98,19 @@ class UserService {
         }
     }
 
+    async createUser(username, email, password, role) {
+        try {
+            const [result] = await db.execute(
+                `INSERT INTO Users (username, email, password_hash, role) VALUES (?, ?, ?, ?)`,
+                [username, email, password, role]
+            );
+
+            return { user_id: result.insertId };
+        } catch (error) {
+            console.error("Error creating user:", error);
+            return { error: "Error creating user." };
+        }
+    }
 
 }
 
