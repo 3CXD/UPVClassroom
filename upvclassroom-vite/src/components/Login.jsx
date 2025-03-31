@@ -17,20 +17,21 @@ function Login() {
         .then(res => {
           if (res.status === 200 && res.data.message === "Login successful") {
             const role = res.data.user.role;
+            //console.log(res.data.user.user_id)
             if (role === "student") {
               navigate('/cursosalumno', { state: { user_id: res.data.user.user_id } });
             } else if (role === "teacher") {
               navigate('/cursosprofesor', { state: { user_id: res.data.user.user_id } });
             } else {
-              alert("Vete a la verga hermano, ese rol que");
+              alert("Rol no reconocido.");
             }
           } else {
-            alert(res.data.error || "An error occurred during login.");
+            alert(res.data.error || "Error al iniciar sesión.");
           }
         })
         .catch(err => {
-          console.error(err);
-          alert(err.response.data.error); //TODO: PUEDES METERLE SWALERT AQUÍ CON EL MENSAJE DE ERROR (QUEDARIA CHIDOTE)
+          console.error("Error al iniciar sesión:", err);
+          alert(err.response?.data?.error || "Error al iniciar sesión.");
         });
     }
     axios.defaults.withCredentials = true;

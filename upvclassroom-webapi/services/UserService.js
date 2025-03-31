@@ -99,6 +99,16 @@ class UserService {
         }
     }
 
+    async getUserById(userId) {
+        try {
+            const query = 'SELECT username FROM Users WHERE user_id = ?';
+            const [rows] = await db.execute(query, [userId]);
+            return rows[0]; // Devuelve el primer resultado
+        } catch (error) {
+            console.error('Error al obtener el usuario:', error);
+            throw error;
+        }
+    }
 
 }
 

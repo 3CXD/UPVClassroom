@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `Classes` (
     `class_id` INT NOT NULL AUTO_INCREMENT,
     `class_name` VARCHAR(255) NOT NULL,
     `progam` VARCHAR(255) NOT NULL, #carrera
+    `class_code` VARCHAR(255) NOT NULL, #código de clase
     `semester` VARCHAR(255) NOT NULL, #cuatri(semestre)   
     `description` TEXT,
     `teacher_id` INT,
