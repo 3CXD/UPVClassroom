@@ -1,8 +1,18 @@
 #root {
-  max-width: 1280px;
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  padding:0%;
+}
+
+html, body {
+  font-size: 16px;
+  line-height: 1.5;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .logo {
@@ -18,13 +28,393 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/*//////////////////// TODO LO DEL HOMEPAGE ////////////////////*/
+
+.columnasHomepage{
+  width: 100%;
+  height: 99%;
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin:0%;
+  justify-items: center;
+  align-content: center;
+}
+
+.columnaIzquierdaHomepage {
+  width: 55%;
+  height: 100%;
+  object-fit:cover;
+}
+
+.columnaIzquierdaHomepage img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.columnaDerechaHomepage {
+  height: 100%;
+  width: 45%;
+  background-color: rgba(125, 50, 168, 1);
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  align-content: center;
+}
+
+.cuadroBlancoHomepage{
+  width: 50%;
+  height: 70%;
+  color: black;
+  background-color: white;
+  border-radius: 20px;
+  margin: auto;
+  padding: 2em;
+}
+
+.loginButton{
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  border-radius: 20px;
+  transition: all 0.3s ease; 
+}
+
+.loginButton:hover{
+  background-color: white;
+  color: black;
+  transition: all 0.3s ease; 
+}
+
+.espacioEnBlanco{
+  width: 100%;
+  height: 10%;
+  justify-content: right;
+  align-items: right;
+  justify-items: right;
+  align-content: right;
+  text-align: right;
+}
+
+.btnCancelarLogin{
+  margin-right: 5%;
+  margin-top: 2%;
+  background-color: white;
+  color: black;
+  border-radius: 10px;
+  transition: all 0.3s ease; 
+}
+
+.btnCancelarLogin:hover{
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  transition: all 0.3s ease; 
+}
+
+.form-group{
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  align-content: center;
+  margin-bottom: 5%;
+}
+
+.textField{
+  width: 100%;
+  height: 5%;
+  margin-bottom: 2%;
+  background-color: white;
+  border-top: black;
+  border-left: black;
+  border-right: black;
+  padding: 3%;
+  color: black;
+}
+
+.textField:focus{
+  border-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+}
+
+/*//////////////////// TODO LO DE CURSOS ////////////////////*/
+
+.columnasCursos{
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin:0%;
+  justify-items: center;
+  align-content: center;
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+}
+
+.primerColumnaCursos{
+  height: 100%;
+  width: 15%;
+}
+
+.segundaColumnaCursos{
+  height: 100%;
+  width: 70%;
+}
+
+.tercerColumnaCursos{
+  height: 100%;
+  width: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bodyCursos{
+ width: 100%;
+ height: 100%;
+ background-color: white;
+ display: flex;
+ color: black;
+ flex-direction: column;
+}
+
+.headerCursos{
+  background-color: rgba(125, 50, 168, 1);
+  margin: 0%;
+}
+
+.logoutButton{
+  background-color: white;
+  color: black;
+  border-radius: 20px;
+  transition: all 0.3s ease; 
+}
+
+.logoutButton:hover{
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  transition: all 0.3s ease; 
+}
+
+.tableroCursos{
+  width: 90%;
+  height: 90%;
+  padding: 5%;
+}
+
+.agregarClase{
+  background-color: rgba(125, 50, 168, 1);
+  border-radius: 10%;
+  color: white;
+  padding: 20px;
+  width: 200px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  transition: all 0.3s ease; 
+}
+
+.agregarClase:hover{
+  background-color: rgb(223, 167, 255);
+  transition: all 0.3s ease; 
+  color: black;
+}
+
+.tarjetaClase{
+  background-color: rgba(125, 50, 168, 1);
+  border-radius: 10%;
+  color: white;
+  padding: 20px;
+  flex-direction: column;
+  width: 200px;
+  cursor: pointer;
+  display: flex;
+  transition: all 0.3s ease; 
+}
+
+.tarjetaClase:hover{
+  background-color: rgb(223, 167, 255);
+  transition: all 0.3s ease; 
+  color: black;
+}
+
+.acomodar{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.miniForm{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  flex-direction: column;
+  transform: translate(-50%, -50%);
+  background-color: rgb(223, 167, 255);
+  padding: 20px;
+  border-radius:20px;
+}
+
+.formNuevaClase{
+  display: flex;
+  flex-direction: column;
+}
+
+.inputNuevaClase{
+  margin-bottom:5%;
+  background-color: rgb(223, 167, 255);
+  border-top:black;
+  border-left:black;
+  border-right:black;
+  border-bottom-color: black;
+  color: black;
+}
+
+.inputDeArchivos{
+  margin-bottom:5%;
+  color: black;
+}
+
+.btnMiniFormCrearClase{
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  margin-bottom: 5%;
+  transition: all 0.3s ease; 
+}
+
+.btnMiniFormCrearClase:hover{
+  background-color: white;
+  color: black;
+  transition: all 0.3s ease; 
+}
+
+/*//////////////////// TODO LO DE CLASE ////////////////////*/
+.columnasClase{
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin:0%;
+  justify-items: center;
+  align-content: center;
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+}
+
+.primerColumnaClase{
+  height: 100%;
+  width: 15%;
+}
+
+.segundaColumnaClase{
+  height: 100%;
+  width: 70%;
+}
+
+.tercerColumnaClase{
+  height: 100%;
+  width: 15%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bodyClase{
+ width: 100%;
+ height: 100%;
+ background-color: white;
+ display: flex;
+ color: black;
+ flex-direction: column;
+}
+
+.headerClase{
+  background-color: rgba(125, 50, 168, 1);
+  margin: 0%;
+}
+
+.backButton{
+  background-color: white;
+  color: black;
+  border-radius: 20px;
+  transition: all 0.3s ease; 
+  margin-top: 5%;
+}
+
+.backButton:hover{
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  transition: all 0.3s ease; 
+}
+
+.agregarAnuncio{
+  background-color: rgba(125, 50, 168, 1);
+  border-radius: 10%;
+  color: white;
+  padding: 20px;
+  width: 200px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  transition: all 0.3s ease; 
+}
+
+.agregarAnuncio:hover{
+  background-color: rgb(223, 167, 255);
+  transition: all 0.3s ease; 
+  color: black;
+}
+
+.tableroClase{
+  width: 90%;
+  height: 100%;
+  padding: 2%;
+}
+
+.cosoParaQueNoSeDesacomode{
+  width: 100%;
+  height: 10%;
+}
+
+.tarjetaAnuncio{
+  background-color: rgba(125, 50, 168, 1);
+  border-radius: 10%;
+  color: white;
+  padding: 20px;
+  flex-direction: column;
+  width: 200px;
+  cursor: pointer;
+  display: flex;
+  transition: all 0.3s ease; 
+}
+
+.tarjetaAnuncio:hover{
+  background-color: rgb(223, 167, 255);
+  transition: all 0.3s ease; 
+  color: black;
+}
+
+.btnMiniFormCrearClase2{
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  margin-bottom: 5%;
+  margin-left: 5%;
+  transition: all 0.3s ease; 
+}
+
+.btnMiniFormCrearClase2:hover{
+  background-color: white;
+  color: black;
+  transition: all 0.3s ease; 
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -124,89 +124,84 @@ function ClaseProfesor() {
   };
 
   return (
-    <div>
-      <button onClick={volver}>Volver</button>
-      <h1>{class_name || 'Clase no encontrada'}</h1>
-      <hr />
-      <h2>Descripción de la clase:</h2>
-      <p>{description || 'Sin descripción'}</p>
-      <h3>Programa:</h3>
-      <p>{progam || 'Sin programa'}</p>
-
-      <h2>Anuncios</h2>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-        <div
-          style={{
-            border: '1px solid black',
-            padding: '20px',
-            width: '200px',
-            textAlign: 'center',
-            cursor: 'pointer',
-          }}
-          onClick={() => setShowForm(true)}
-        >
-          <h3>+ Agregar Anuncio</h3>
+    <div className="bodyClase">
+      <div className="headerClase">
+        <div className="columnasClase">
+          <div className="primerColumnaClase">
+            
+          </div>
+          <div className="segundaColumnaClase">
+            <h1>{class_name || 'Clase no encontrada'}</h1>
+            <h2>Descripción de la clase:</h2>
+            <p>{description || 'Sin descripción'}</p>
+            <h3>Programa:</h3>
+            <p>{progam || 'Sin programa'}</p>
+          </div>
+          <div className="tercerColumnaClase">
+            <button className="backButton" onClick={volver}>Volver</button>
+            <button className="backButton" onClick={() => { setShowStudentModal(true); fetchStudents(); }}>
+              Enroll Students
+            </button>
+          </div>
         </div>
-
-        {announcements.length > 0 ? (
-          announcements.map((announcement) => (
-            <div
-              key={announcement.announcement_id}
-              style={{
-                border: '1px solid black',
-                padding: '20px',
-                width: '200px',
-                textAlign: 'center',
-              }}
-            >
-              <h3>{announcement.title}</h3>
-              <p>{announcement.message}</p>
-              {announcement.files && announcement.files.length > 0 && (
-                <div>
-                  <h4>Archivos:</h4>
-                  <ul>
-                    {announcement.files.map((file, index) => (
-                      <li key={index}>
-                        <a
-                          href={`http://localhost:3001/${file.file_path}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {file.original_name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ))
-        ) : (
-          <p>No announcements available.</p>
-        )}
       </div>
+      
+      
+      <h2 className="cosoParaQueNoSeDesacomode">Anuncios</h2>
+      <div className="tableroClase">
+        <div className="acomodar">
+          <div
+            className="agregarAnuncio"
+            onClick={() => setShowForm(true)}
+          >
+            <h3>+ Agregar Anuncio</h3>
+          </div>
 
-      <button onClick={() => setShowStudentModal(true)}>
-        Enroll Students
-      </button>
+          {announcements.length > 0 ? (
+            announcements.map((announcement) => (
+              <div
+                key={announcement.announcement_id}
+                className="tarjetaAnuncio"
+              >
+                <h3>{announcement.title}</h3>
+                <p>{announcement.message}</p>
+                {announcement.files && announcement.files.length > 0 && (
+                  <div>
+                    <h4>Archivos:</h4>
+                    <ul>
+                      {announcement.files.map((file, index) => (
+                        <li key={index}>
+                          <a
+                            href={`http://localhost:3001/${file.file_path}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {file.original_name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <p>No announcements available.</p>
+          )}
+        </div>
+      </div>
+      
+
+      
 
       {showStudentModal && (
         <div
-          style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'white',
-            padding: '20px',
-            border: '1px solid black',
-            zIndex: 1000,
-            width: '400px',
-          }}
+          className="miniForm"
         >
           <h2>Enroll Students</h2>
           <input
             type="text"
+            className='inputNuevaClase'
             placeholder="Search by username"
             onChange={(e) => {
               const searchQuery = e.target.value.trim();
@@ -216,13 +211,6 @@ function ClaseProfesor() {
                 setStudents([]);
               }
             }}
-            style={{
-              width: '100%',
-              padding: '10px',
-              marginBottom: '20px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-            }}
           />
           <ul>
             {students.length > 0 ? (
@@ -230,7 +218,7 @@ function ClaseProfesor() {
                 <li key={student.user_id} style={{ marginBottom: '10px' }}>
                   {student.username}
                   <button
-                    style={{ marginLeft: '10px' }}
+                  className="btnMiniFormCrearClase2"
                     onClick={() => handleEnrollStudent(student.user_id)}
                   >
                     Enroll
@@ -241,7 +229,7 @@ function ClaseProfesor() {
               <p>No students found. Start typing to search.</p>
             )}
           </ul>
-          <button onClick={() => setShowStudentModal(false)}>Close</button>
+          <button className="btnMiniFormCrearClase" onClick={() => setShowStudentModal(false)}>Close</button>
           {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
           {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
@@ -249,20 +237,12 @@ function ClaseProfesor() {
 
       {showForm && (
         <div
-          style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'white',
-            padding: '20px',
-            border: '1px solid black',
-            zIndex: 1000,
-          }}
+          className="miniForm"
         >
           <h2>Crear Nuevo Anuncio</h2>
-          <form onSubmit={handleCreateAnnouncement}>
+          <form onSubmit={handleCreateAnnouncement} className="formNuevaClase">
             <input
+              className="inputNuevaClase"
               type="text"
               name="title"
               placeholder="Título"
@@ -271,15 +251,16 @@ function ClaseProfesor() {
               required
             />
             <textarea
+              className="inputNuevaClase"
               name="message"
               placeholder="Mensaje"
               value={newAnnouncement.message}
               onChange={handleInputChange}
               required
             />
-            <input type="file" multiple onChange={handleFileChange} /> {/* Allow multiple files */}
-            <button type="submit">Crear Anuncio</button>
-            <button type="button" onClick={() => setShowForm(false)}>
+            <input className="inputDeArchivos" type="file" multiple onChange={handleFileChange} /> {/* Allow multiple files */}
+            <button className="btnMiniFormCrearClase" type="submit">Crear Anuncio</button>
+            <button className="btnMiniFormCrearClase" type="button" onClick={() => setShowForm(false)}>
               Cancelar
             </button>
           </form>

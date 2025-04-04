@@ -75,100 +75,97 @@ function CursosProfesor() {
   };
 
   return (
-    <div>
-      <button onClick={handleDelete}>Cerrar Sesión</button>
-      <h1>Hola, AgregarUsernameAqui</h1>  
-      <h3>Aquí puedes ver las clases que impartes</h3>
+    <div className="bodyCursos">
+      <div className="headerCursos">
+        <div className="columnasCursos">
+          <div className="primerColumnaCursos">
 
-      
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-        {/* Add Class Rectangle */}
-        <div
-          style={{
-            border: '1px solid black',
-            padding: '20px',
-            width: '200px',
-            textAlign: 'center',
-            cursor: 'pointer',
-          }}
-          onClick={() => setShowForm(true)}
-        >
-          <h3>+ Agregar Clase</h3>
-        </div>
-
-        {/* Class Rectangles */}
-        {classes.map((clase) => (
-          <div
-            key={clase.class_id}
-            style={{
-              border: '1px solid black',
-              padding: '20px',
-              width: '200px',
-              textAlign: 'center',
-            }}
-          >
-            <h3>{clase.class_name}</h3>
-            <p>{clase.description || 'Sin descripción'}</p>
-            <button onClick={() => verClase(clase, teacher_Id)}>Ver Clase</button>
           </div>
-        ))}
+          <div className="segundaColumnaCursos">
+            <h1>Hola, AgregarUsernameAqui</h1>  
+            <h3>Aquí puedes ver las clases que impartes</h3>
+          </div>
+          <div className="tercerColumnaCursos">
+            <button className="logoutButton" onClick={handleDelete}>Cerrar Sesión</button>
+          </div>
+        </div>
       </div>
 
-      {/* Add Class Form */}
-      {showForm && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'white',
-            padding: '20px',
-            border: '1px solid black',
-            zIndex: 1000,
-          }}
-        >
-          <h2>Crear Nueva Clase</h2>
-          <form onSubmit={handleCreateClass}>
-            <input
-              type="text"
-              name="className"
-              placeholder="Nombre de la Clase"
-              value={newClass.className}
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="text"
-              name="description"
-              placeholder="Descripción"
-              value={newClass.description}
-              onChange={handleInputChange}
-            />
-            <input
-              type="text"
-              name="progam"
-              placeholder="Programa"
-              value={newClass.progam}
-              onChange={handleInputChange}
-              required
-            />
-            <input
-              type="text"
-              name="semester"
-              placeholder="Semestre"
-              value={newClass.semester}
-              onChange={handleInputChange}
-              required
-            />
-            <button type="submit">Crear Clase</button>
-            <button type="button" onClick={() => setShowForm(false)}>
-              Cancelar
-            </button>
-          </form>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
+      <div className="tableroCursos">
+        <div className="acomodar" >
+          {/* Add Class Rectangle */}
+          <div className="agregarClase" 
+            onClick={() => setShowForm(true)}
+          >
+            <h3>+ Agregar Clase</h3>
+          </div>
+
+          {/* Class Rectangles */}
+          {classes.map((clase) => (
+            <div
+              key={clase.class_id}
+              className="tarjetaClase"
+              onClick={() => verClase(clase, teacher_Id)}
+            >
+              <h3>{clase.class_name}</h3>
+              <p>{clase.description || 'Sin descripción'}</p>
+            </div>
+          ))}
         </div>
-      )}
+
+        {/* Add Class Form */}
+        {showForm && (
+          <div
+            className="miniForm"
+          >
+            <h2>Crear Nueva Clase</h2>
+            <form onSubmit={handleCreateClass} className="formNuevaClase">
+              <input
+                className="inputNuevaClase"
+                type="text"
+                name="className"
+                placeholder="Nombre de la Clase"
+                value={newClass.className}
+                onChange={handleInputChange}
+                required
+              />
+              <input
+                className="inputNuevaClase"
+                type="text"
+                name="description"
+                placeholder="Descripción"
+                value={newClass.description}
+                onChange={handleInputChange}
+              />
+              <input
+                className="inputNuevaClase"
+                type="text"
+                name="progam"
+                placeholder="Programa"
+                value={newClass.progam}
+                onChange={handleInputChange}
+                required
+              />
+              <input
+                className="inputNuevaClase"
+                type="text"
+                name="semester"
+                placeholder="Semestre"
+                value={newClass.semester}
+                onChange={handleInputChange}
+                required
+              />
+              <button className="btnMiniFormCrearClase" type="submit">Crear Clase</button>
+              <button className="btnMiniFormCrearClase" type="button" onClick={() => setShowForm(false)}>
+                Cancelar
+              </button>
+            </form>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+          </div>
+        )}
+      </div>
+
+      
     </div>
   );
 }
