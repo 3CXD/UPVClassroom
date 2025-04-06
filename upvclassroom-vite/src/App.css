@@ -294,6 +294,32 @@ html, body {
 }
 
 /*//////////////////// TODO LO DE CLASE ////////////////////*/
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tabButton {
+  padding: 10px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  border: none;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.tabButton.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.tabContent {
+  padding: 20px;
+}
+
+
 .columnasClase{
   width: 100%;
   height: 100%;
@@ -429,4 +455,68 @@ html, body {
 
 .read-the-docs {
   color: #888;
+}
+
+/*//////////////////// TODO LO DE TOPICS ////////////////////*/
+
+.contentGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.contentItem {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.contentItem h4 {
+    margin-bottom: 8px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.contentItem p {
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.contentItem ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contentItem ul li {
+    margin-top: 4px;
+}
+
+.contentItem ul li a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.contentItem ul li a:hover {
+    text-decoration: underline;
+}
+
+/* CSS for horizontal layout in rows of 4 */
+.contentGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 items per row */
+  gap: 20px; /* Space between items */
+}
+
+.topicCard {
+  border: 1px solid black;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: center;
 }
