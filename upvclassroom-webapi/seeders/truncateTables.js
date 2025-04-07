@@ -12,6 +12,10 @@ async function truncateTables() {
         "Topics",
         "Classes",
         "Users",
+        "SubmissionFiles",
+        "AssignmentFiles",
+        "MaterialFiles",
+        "AnnouncementFiles",
     ];
 
     try {

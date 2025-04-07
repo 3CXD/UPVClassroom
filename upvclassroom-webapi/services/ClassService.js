@@ -22,6 +22,118 @@ class ClassService {
         }
     }
 
+    async createTopic (classId, topicName, description) {
+        console.log("Creating topic with data:", classId, topicName, description);
+        const [classCheck] = await db.execute(
+            `SELECT class_id FROM Classes WHERE class_id = ?`,
+            [classId]
+        );
+        if (classCheck.length === 0) {
+            console.log(`No class found with ID ${classId}.`);
+            return { error: `No class found with ID ${classId}.` };
+        }
+
+        try {
+            const [result] = await db.execute(
+                `INSERT INTO Topics (class_id, title, description) VALUES (?, ?, ?)`,
+                [classId, topicName, description]
+            );
+            if (result.affectedRows === 0) {
+                console.log("Failed to create topic.");
+                return { error: "Failed to create topic." };
+            }
+            console.log(`Inserted topic with ID: ${result.insertId}`);
+            return { topic_id: result.insertId,topicName, description};
+        } catch (error) {
+            console.error("Error creating topic:", error);
+            return { error: "Error creating topic." };
+        }
+
+    }
+
+    async createMaterial(classId, topicId, title, description) {
+        console.log("Creating material with data:", classId, topicId, title, description);
+        const [classCheck] = await db.execute(
+            `SELECT class_id FROM Classes WHERE class_id = ?`,
+            [classId]
+        );
+        if (classCheck.length === 0) {
+            console.log(`No class found with ID ${classId}.`);
+            return { error: `No class found with ID ${classId}.` };
+        }
+        const [topicCheck] = await db.execute(
+            `SELECT topic_id, title FROM Topics WHERE topic_id = ?`,
+            [topicId]
+        );
+        if (topicCheck.length === 0) {
+            console.log(`No topic found with ID ${topicId}.`);
+            return { error: `No topic found with ID ${topicId}.` };
+        }
+
+        console.log(topicCheck);
+    
+        try {
+            const [result] = await db.execute(
+                `INSERT INTO Materials (class_id, topic_id, title, description) VALUES (?, ?, ?, ?)`,
+                [classId, topicId, title, description]
+            );
+            if (result.affectedRows === 0) {
+                console.log("Failed to create material.");
+                return { error: "Failed to create material." };
+            }
+            console.log(`Inserted material with ID: ${result.insertId}`);
+    
+            const announcementTitle = `New Material Added: ${title}`;
+            const announcementMessage = `A new material titled "${title}" has been added to the "${topicCheck[0].title}".`;
+            await this.createAnnouncement(classId, announcementTitle, announcementMessage);
+    
+            return { material_id: result.insertId, title, description };
+        } catch (error) {
+            console.error("Error creating material:", error);
+            return { error: "Error creating material." };
+        }
+    }
+
+    async createAssignment(classId, topicId, title, description, dueDate) {
+        console.log("Creating assignment with data:", classId, topicId, title, description, dueDate);
+        const [classCheck] = await db.execute(
+            `SELECT class_id FROM Classes WHERE class_id = ?`,
+            [classId]
+        );
+        if (classCheck.length === 0) {
+            console.log(`No class found with ID ${classId}.`);
+            return { error: `No class found with ID ${classId}.` };
+        }
+        const [topicCheck] = await db.execute(
+            `SELECT topic_id, title FROM Topics WHERE topic_id = ?`,
+            [topicId]
+        );
+        if (topicCheck.length === 0) {
+            console.log(`No topic found with ID ${topicId}.`);
+            return { error: `No topic found with ID ${topicId}.` };
+        }
+
+        try {
+            const [result] = await db.execute(
+                `INSERT INTO Assignments (class_id, topic_id ,title, description, due_date) VALUES (?, ?, ?, ?, ?)`,
+                [classId, topicId , title, description, dueDate]
+            );
+            if (result.affectedRows === 0) {
+                console.log("Failed to create assignment.");
+                return { error: "Failed to create assignment." };
+            }
+
+            const announcementTitle = `New Assignment Added: ${title}`;
+            const announcementMessage = `A new material titled "${title}" has been added to the "${topicCheck[0].title}".`;
+            await this.createAnnouncement(classId, announcementTitle, announcementMessage);
+            console.log(`Inserted assignment with ID: ${result.insertId}`);
+            return { assignment_id: result.insertId, title, description };
+        } catch (error) {
+            console.error("Error creating assignment:", error);
+            return { error: "Error creating assignment." };
+        }
+    }
+
     async createAnnouncement(classId, title, message) {
         console.log("Creating announcement with data:", classId, title, message);
         try {
@@ -53,7 +165,10 @@ class ClassService {
     async getAnnouncements(classId) {
         try {
             const [announcements] = await db.execute(
-                `SELECT announcement_id, title, message FROM Announcements WHERE class_id = ?`,
+                `SELECT announcement_id, title, created_at, message 
+                 FROM Announcements 
+                 WHERE class_id = ? 
+                 ORDER BY created_at DESC`,
                 [classId]
             );
 
@@ -70,10 +185,75 @@ class ClassService {
                 announcement.files = files;
             }
 
+
+
             return announcements;
         } catch (error) {
             console.error("Error fetching announcements:", error);
             return { error: "Error fetching announcements." };
+        }
+    }
+
+    async getTopicContent(classId, topicId) {
+        try {
+            const [materials] = await db.execute(
+                `SELECT material_id AS id, title, description, created_at, 'Material' AS type 
+                 FROM Materials 
+                 WHERE class_id = ? AND topic_id = ?`,
+                [classId, topicId]
+            );
+    
+            const [assignments] = await db.execute(
+                `SELECT assignment_id AS id, title, description, due_date, created_at, 'Assignment' AS type 
+                 FROM Assignments 
+                 WHERE class_id = ? AND topic_id = ?`,
+                [classId, topicId]
+            );
+
+            if (!assignments || assignments.length === 0) {
+                console.log(`No assignments found for class with ID ${classId} and topic with ID ${topicId}.`);
+                return materials;
+            }
+    
+            const combinedContent = [...materials, ...assignments].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            
+            for (const content of combinedContent) {
+                if (content.type === 'Material') {
+                    const [files] = await db.execute(
+                        `SELECT original_name, file_path FROM MaterialFiles WHERE material_id = ?`,
+                        [content.id]
+                    );
+                    content.files = files;
+                } else if (content.type === 'Assignment') {
+                    const [files] = await db.execute(
+                        `SELECT original_name, file_path FROM AssignmentFiles WHERE assignment_id = ?`,
+                        [content.id]
+                    );
+                    content.files = files;
+                }
+            }
+    
+            return combinedContent;
+        } catch (error) {
+            console.error("Error fetching topic content:", error);
+            return { error: "Error fetching topic content." };
+        }
+    }
+
+    async getTopics(classId) {
+        try {
+            const [topics] = await db.execute(
+                `SELECT topic_id, title, description FROM Topics WHERE class_id = ?`,
+                [classId]
+            );
+            if (!topics || topics.length === 0) {
+                console.log(`No topics found for class with ID ${classId}.`);
+                return [];
+            }
+            return topics;
+        } catch (error) {
+            console.error("Error fetching topics:", error);
+            return { error: "Error fetching topics." };
         }
     }
 

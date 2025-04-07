@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 require("dotenv").config();
-const routerApi = require("./routes"); //TODO: CREAR RUTAS POR FIXEADAS
+const routerApi = require("./routes");
 const path = require("path");
 
 const EnrollmentService = require("./services/EnrollmentService");

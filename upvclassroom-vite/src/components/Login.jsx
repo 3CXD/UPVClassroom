@@ -39,34 +39,34 @@ function Login() {
     axios.defaults.withCredentials = true;
 
     return (
-          <div className='columnasHomepage'>
-            <div className='columnaIzquierdaHomepage'>
-              <img src={homepageBackground} alt="Background" />
+      <div className='columnasHomepage'>
+        <div className='columnaIzquierdaHomepage'>
+          <img src={homepageBackground} alt="Background" />
+        </div>
+        <div className='columnaDerechaHomepage'>
+          <div className="espacioEnBlanco">
+              <button className="btnCancelarLogin" onClick={cancelar}>Cancelar</button>
             </div>
-            <div className='columnaDerechaHomepage'>
-              <div className="espacioEnBlanco">
-                  <button className="btnCancelarLogin" onClick={cancelar}>Cancelar</button>
+          <div className='cuadroBlancoHomepage'>
+            <img src={logo} alt="Logo" className='logoHomepage' />
+            <h1>Iniciar Sesión</h1>
+            <form className="formularioLogin" onSubmit={handleSubmit}>
+                <div className="form-group">
+                <label htmlFor="email">Correo electrónico</label>
+                <input required type="email" placeholder="Ingresa tu correo electrónico" name="email"
+                onChange={e => setValues({...values, email: e.target.value})} className="textField" />
                 </div>
-              <div className='cuadroBlancoHomepage'>
-                <img src={logo} alt="Logo" className='logoHomepage' />
-                <h1>Iniciar Sesión</h1>
-                <form className="formularioLogin" onSubmit={handleSubmit}>
-                    <div className="form-group">
-                    <label htmlFor="email">Correo electrónico</label>
-                    <input required type="email" placeholder="Ingresa tu correo electrónico" name="email"
-                    onChange={e => setValues({...values, email: e.target.value})} className="textField" />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password">Contraseña</label>
-                        <input required type="password" placeholder="Ingresa tu contraseña" name="password"
-                        onChange={e=> setValues({...values, password: e.target.value})} className='textField' />
-                    </div>
-                    <button type="submit" className="loginButton">Iniciar Sesión</button>
-                </form>
-              </div>
-              <div className="espacioEnBlanco"></div>
-            </div>
-          </div>
+                <div className="form-group">
+                    <label htmlFor="password">Contraseña</label>
+                    <input required type="password" placeholder="Ingresa tu contraseña" name="password"
+                    onChange={e=> setValues({...values, password: e.target.value})} className='textField' />
+                </div>
+                <button type="submit" className="loginButton">Iniciar Sesión</button>
+            </form>
+        </div>
+        <div className="espacioEnBlanco"></div>
+        </div>
+      </div>
     );
 }
 
