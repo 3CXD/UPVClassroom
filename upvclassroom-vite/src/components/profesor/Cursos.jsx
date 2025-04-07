@@ -82,7 +82,7 @@ function CursosProfesor() {
 
           </div>
           <div className="segundaColumnaCursos">
-            <h1>Hola, AgregarUsernameAqui</h1>  
+            <h1>Bienvenido</h1>  
             <h3>Aquí puedes ver las clases que impartes</h3>
           </div>
           <div className="tercerColumnaCursos">

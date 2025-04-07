@@ -84,13 +84,22 @@ function ClaseAlumno() {
   }, [class_id]);
 
   return (
-    <div>
-      <button onClick={volver}>Volver</button>
-      <h1>{class_name || 'Clase no encontrada'}</h1>
-      <h2>Profesor que imparte la clase:</h2>
-      <h3>{teacher_name || 'Sin profesor asignado'}</h3>
-      <h2>Descripción de la clase:</h2>
-      <h3>{description || 'Sin descripción'}</h3>
+    <div className="bodyClase">
+      <div className="headerClase">
+        <div className = "columnasClase">
+          <div className="primerColumnaClase"></div>
+          <div className="segundaColumnaClase">
+            <h1>{class_name || 'Clase no encontrada'}</h1>
+            <h2>Profesor que imparte la clase:</h2>
+            <h3>{teacher_name || 'Sin profesor asignado'}</h3>
+            <h2>Descripción de la clase:</h2>
+            <h3>{description || 'Sin descripción'}</h3>
+          </div>
+          <div className="tercerColumnaClase">
+            <button className="backButton" onClick={volver}>Volver</button>
+          </div>
+        </div>
+      </div>
 
       {/* Tabs for switching between Announcements and Topics */}
       <div className="tabs">
@@ -110,46 +119,46 @@ function ClaseAlumno() {
 
       {/* Content for Announcements */}
       {activeTab === 'announcements' && (
-        <div>
-          <h2>Tablón</h2>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-            {announcements.length > 0 ? (
-              announcements.map((announcement) => (
-                <div
-                  key={announcement.announcement_id}
-                  style={{
-                    border: '1px solid black',
-                    padding: '20px',
-                    width: '200px',
-                    textAlign: 'center',
-                  }}
-                >
-                  <h3>{announcement.title}</h3>
-                  <p>{announcement.message}</p>
-                  {announcement.files && announcement.files.length > 0 && (
-                    <div>
-                      <h4>Archivos:</h4>
-                      <ul>
-                        {announcement.files.map((file, index) => (
-                          <li key={index}>
-                            <a
-                              href={`http://localhost:3001/${file.file_path}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {file.original_name}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
+        <div className="tabContent">
+          <div className="tableroClase">
+              <h2>Tablón</h2>
+            <div className="acomodar">
+              {error && <p style={{ color: 'red' }}>{error}</p>}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+                {announcements.length > 0 ? (
+                  announcements.map((announcement) => (
+                    <div
+                      key={announcement.announcement_id}
+                      className="tarjetaAnuncio"
+                    >
+                      <h3>{announcement.title}</h3>
+                      <p>{announcement.message}</p>
+                      {announcement.files && announcement.files.length > 0 && (
+                        <div>
+                          <h4>Archivos:</h4>
+                          <ul>
+                            {announcement.files.map((file, index) => (
+                              <li key={index}>
+                                <a
+                                  href={`http://localhost:3001/${file.file_path}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {file.original_name}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p>No announcements available.</p>
-            )}
+                  ))
+                ) : (
+                  <p>No announcements available.</p>
+                )}
+              </div>
+            </div>
+          
           </div>
         </div>
       )}

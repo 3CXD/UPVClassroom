@@ -155,6 +155,20 @@ html, body {
   color: white;
 }
 
+.btnVer{
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  border-radius: 10%;
+  transition: all 0.3s ease; 
+}
+
+.btnVer:hover{
+  background-color: rgb(223, 167, 255);
+  color: rgb(0, 0, 0);
+  border-radius: 10%;
+  transition: all 0.3s ease; 
+}
+
 .primerColumnaCursos{
   height: 100%;
   width: 15%;
@@ -204,6 +218,46 @@ html, body {
   width: 90%;
   height: 90%;
   padding: 5%;
+}
+
+.tableroCursosAlumno{
+  width: 100%;
+  height: 90%;
+  align-content: center;
+  justify-items: center;
+}
+
+.tablaCursos {
+  border-collapse: collapse; 
+  background-color: #f9f9f9; 
+  border: 1px solid rgba(125, 50, 168, 1);
+  border-radius: 10%; 
+  transition: all 0.3s ease; 
+}
+
+.tablaCursos th {
+  background-color: rgba(125, 50, 168, 1); 
+  color: white; 
+  padding: 10px;
+  text-align: left;
+  border: 1px solid rgba(125, 50, 168, 1); 
+  transition: all 0.3s ease; 
+}
+
+.tablaCursos td {
+  padding: 10px;
+  border: 1px solid rgba(125, 50, 168, 1); 
+  transition: all 0.3s ease; 
+}
+
+.tablaCursos tr:nth-child(even) {
+  background-color: #f2f2f2; 
+  transition: all 0.3s ease; 
+}
+
+.tablaCursos tr:hover {
+  background-color: #e0e0e0; 
+  transition: all 0.3s ease; 
 }
 
 .agregarClase{
@@ -299,6 +353,7 @@ html, body {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .tabButton {
@@ -306,12 +361,19 @@ html, body {
   margin: 0 5px;
   cursor: pointer;
   border: none;
-  background-color: #f0f0f0;
   border-radius: 5px;
+  background-color: rgb(223, 167, 255);
+  transition: all 0.3s ease;
+}
+
+.tabButton:hover {
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  transition: all 0.3s ease;
 }
 
 .tabButton.active {
-  background-color: #007bff;
+  background-color: rgba(125, 50, 168, 1);
   color: white;
 }
 
@@ -355,7 +417,8 @@ html, body {
 
 .bodyClase{
  width: 100%;
- height: 100%;
+ height: auto;
+ min-height: 100%;
  background-color: white;
  display: flex;
  color: black;
@@ -401,9 +464,9 @@ html, body {
 }
 
 .tableroClase{
-  width: 90%;
+  width: 100%;
   height: 100%;
-  padding: 2%;
+  margin-top: 20px;
 }
 
 .cosoParaQueNoSeDesacomode{
@@ -475,6 +538,11 @@ html, body {
     text-align: center;
 }
 
+.topicHeader {
+    margin-bottom: 16px;
+    color: white;
+}
+
 .contentItem h4 {
     margin-bottom: 8px;
     font-size: 1.2em;
@@ -514,9 +582,58 @@ html, body {
 }
 
 .topicCard {
-  border: 1px solid black;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: rgba(125, 50, 168, 1);
   border-radius: 8px;
   text-align: center;
+  margin-bottom:20px;
+}
+
+.topicContent{
+  color: white;
+}
+
+.btnAddTopic{
+  background-color: rgba(125, 50, 168, 1);
+  border-radius: 10%;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease; 
+}
+.btnAddTopic:hover{
+  background-color: rgb(223, 167, 255);
+  transition: all 0.3s ease; 
+}
+
+.btnAddMaterial{
+  background-color: rgb(255, 255, 255);
+  border-radius: 10%;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease; 
+  margin-right:20px;
+}
+.btnAddMaterial:hover{
+  background-color: rgb(125, 50, 168, 1);
+  color: white;
+  transition: all 0.3s ease; 
+}
+
+.btnAddAssignment{
+  background-color: rgb(255, 255, 255);
+  border-radius: 10%;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btnAddAssignment:hover{
+  background-color: rgb(125, 50, 168, 1);
+  color: white;
+  transition: all 0.3s ease; 
 }
