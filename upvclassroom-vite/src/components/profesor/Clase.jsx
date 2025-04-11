@@ -249,7 +249,7 @@ function ClaseProfesor() {
           setTopics((prevTopics) =>
             prevTopics.map((topic) =>
               topic.topic_id === selectedTopicId
-                ? { ...topic, content: [data, ...topic.content] }
+                ? { ...topic, content: updatedContent }
                 : topic
             )
           );
@@ -298,7 +298,7 @@ function ClaseProfesor() {
           setTopics((prevTopics) =>
             prevTopics.map((topic) =>
               topic.topic_id === selectedTopicId
-                ? { ...topic, content: [data, ...topic.content] } // Add new assignment at the beginning
+                ? { ...topic, content: updatedContent }
                 : topic
             )
           );
