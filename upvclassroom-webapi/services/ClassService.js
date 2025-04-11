@@ -243,7 +243,7 @@ class ClassService {
     async getTopics(classId) {
         try {
             const [topics] = await db.execute(
-                `SELECT topic_id, title, description FROM Topics WHERE class_id = ?`,
+                `SELECT topic_id, title, description FROM Topics WHERE class_id = ? ORDER BY created_at DESC`,
                 [classId]
             );
             if (!topics || topics.length === 0) {
