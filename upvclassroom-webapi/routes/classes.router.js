@@ -56,6 +56,24 @@ router.get("/:Id/topics", async (req, res) => {
     }
 });
 
+router.get("/:classId/students", async (req, res) => {
+    const { classId } = req.params;
+
+    try {
+        const classService = new ClassService();
+        const students = await classService.getStudentsByClassId(classId);
+
+        if (!students || students.length === 0) {
+            return res.status(404).json({ error: "No students found for this class." });
+        }
+
+        res.json(students);
+    } catch (error) {
+        console.error("Error fetching students:", error);
+        res.status(500).send("Error fetching students: " + error.message);
+    }
+});
+
 router.get("/:classId/material/:materialId", async (req, res) => {
     try {
         const { materialId } = req.params;
@@ -88,6 +106,24 @@ router.get('/assignments/:assignmentId', async (req, res) => {
     } catch (error) {
         console.error('Error fetching assignment details:', error);
         res.status(500).send({ error: 'Error fetching assignment details: ' + error.message });
+    }
+});
+
+router.get("/assignment/:assignmentId/submissions", async (req, res) => {
+    const { assignmentId } = req.params;
+
+    try {
+        const classService = new ClassService();
+        const submissions = await classService.getSubmissionsByAssignmentId(assignmentId);
+
+        if (!submissions || submissions.length === 0) {
+            return res.status(404).json({ error: "No submissions found for this assignment." });
+        }
+
+        res.json(submissions);
+    } catch (error) {
+        console.error("Error fetching submissions:", error);
+        res.status(500).send("Error fetching submissions: " + error.message);
     }
 });
 
@@ -292,6 +328,25 @@ router.post('/assignment/:assignmentId/submit', upload, async (req, res) => {
     } catch (error) {
         console.error('Error submitting assignment:', error);
         res.status(500).send('Error submitting assignment: ' + error.message);
+    }
+});
+
+router.post("/assignment/:assignmentId/submission/:studentId/grade", async (req, res) => {
+    const { assignmentId, studentId } = req.params;
+    const { grade } = req.body;
+
+    try {
+        const classService = new ClassService();
+        const result = await classService.gradeSubmission(assignmentId, studentId, grade);
+
+        if (result.error) {
+            return res.status(400).json({ error: result.error });
+        }
+
+        res.json({ message: "Grade updated successfully." });
+    } catch (error) {
+        console.error("Error grading submission:", error);
+        res.status(500).send("Error grading submission: " + error.message);
     }
 });
 

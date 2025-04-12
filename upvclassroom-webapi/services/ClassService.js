@@ -217,6 +217,35 @@ class ClassService {
         }
     }
 
+    async gradeSubmission(assignmentId, studentId, grade) {
+        try {
+            const [submissionCheck] = await db.execute(
+                `SELECT submission_id FROM Submissions WHERE assignment_id = ? AND student_id = ?`,
+                [assignmentId, studentId]
+            );
+    
+            if (submissionCheck.length === 0) {
+                return { error: "No submission found for this assignment and student." };
+            }
+    
+            const [result] = await db.execute(
+                `UPDATE Submissions 
+                 SET grade = ?, graded_at = NOW() 
+                 WHERE assignment_id = ? AND student_id = ?`,
+                [grade, assignmentId, studentId]
+            );
+    
+            if (result.affectedRows === 0) {
+                return { error: "Failed to update grade." };
+            }
+    
+            return { message: "Grade updated successfully." };
+        } catch (error) {
+            console.error("Error grading submission:", error);
+            throw new Error("Error grading submission.");
+        }
+    }
+
     async deleteSubmission(assignmentId, studentId) {
         try {
             // Verificar si la entrega ya fue calificada
@@ -360,10 +389,45 @@ class ClassService {
                 return { error: "No submission found for this assignment and student." };
             }
     
+            const [files] = await db.execute(
+                `SELECT original_name, file_path 
+                 FROM SubmissionFiles 
+                 WHERE submission_id = ?`,
+                [submission[0].submission_id]
+            );
+    
+            submission[0].files = files || [];
             return submission[0];
         } catch (error) {
             console.error("Error fetching submission:", error);
             return { error: "Error fetching submission." };
+        }
+    }
+
+    async getSubmissionsByAssignmentId(assignmentId) {
+        try {
+            const [submissions] = await db.execute(
+                `SELECT s.submission_id, s.student_id, s.submitted_at, s.grade, u.first_name, u.last_name
+                 FROM Submissions s
+                 JOIN Users u ON s.student_id = u.user_id
+                 WHERE s.assignment_id = ?`,
+                [assignmentId]
+            );
+    
+            for (const submission of submissions) {
+                const [files] = await db.execute(
+                    `SELECT original_name, file_path 
+                     FROM SubmissionFiles 
+                     WHERE submission_id = ?`,
+                    [submission.submission_id]
+                );
+                submission.files = files || [];
+            }
+    
+            return submissions;
+        } catch (error) {
+            console.error("Error fetching submissions by assignment ID:", error);
+            throw new Error("Error fetching submissions by assignment ID.");
         }
     }
 
@@ -427,6 +491,23 @@ class ClassService {
         } catch (error) {
             console.error("Error fetching topics:", error);
             return { error: "Error fetching topics." };
+        }
+    }
+
+    async getStudentsByClassId(classId) {
+        try {
+            const [students] = await db.execute(
+                `SELECT u.user_id, u.first_name, u.last_name, u.email 
+                 FROM Users u
+                 JOIN Enrollment e ON u.user_id = e.student_id
+                 WHERE e.class_id = ?`,
+                [classId]
+            );
+    
+            return students;
+        } catch (error) {
+            console.error("Error fetching students by class ID:", error);
+            throw new Error("Error fetching students by class ID.");
         }
     }
 

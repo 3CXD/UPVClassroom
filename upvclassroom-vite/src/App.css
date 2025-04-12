@@ -593,6 +593,28 @@ html, body {
   color: white;
 }
 
+.submissionsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  justify-content: center;
+}
+
+.submissionCard {
+  background-color: rgba(125, 50, 168, 1); 
+  border-radius: 8px;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submissionCard:hover {
+  background-color: rgb(223, 167, 255); 
+  color: black;
+}
+
 .btnAddTopic{
   background-color: rgba(125, 50, 168, 1);
   border-radius: 10%;

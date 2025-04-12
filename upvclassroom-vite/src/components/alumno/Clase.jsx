@@ -209,6 +209,7 @@ function ClaseAlumno() {
                             }
                             style={{ cursor: 'pointer' }}
                           >
+                            <p>{item.type === 'Material' ? 'Material' : 'Tarea'}</p> {/* Add this line */}
                             <h4>{item.title}</h4>
                             <p>{item.description}</p>
                             {item.files && item.files.length > 0 && (

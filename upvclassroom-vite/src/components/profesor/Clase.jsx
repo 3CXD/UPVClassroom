@@ -295,7 +295,6 @@ function ClaseProfesor() {
       if (response.ok) {
         handleCloseAssignmentModal();
 
-        // Fetch updated content for the topic
         const contentResponse = await fetch(
           `http://localhost:3001/classes/${class_id}/topicContent/${selectedTopicId}`
         );
@@ -360,6 +359,25 @@ function ClaseProfesor() {
     }
   };
 
+  const handleMaterialClick = (materialId) => {
+    navigate(`/cursosprofesor/claseprofesor/vermaterial`, {
+      state: { 
+        materialId, 
+        classData: { class_id, class_name, description, progam }, 
+        teacher_Id 
+      }
+    });
+  };
+
+  const handleAssignmentClick = (assignmentId) => {
+    navigate(`/cursosprofesor/claseprofesor/vertareaprofesor`, {
+      state: { 
+        assignmentId, 
+        classData: { class_id, class_name, description, progam }, 
+        teacher_Id 
+      }
+    });
+  };
   return (
     <div className="bodyClase">
       <div className="headerClase">
@@ -471,7 +489,19 @@ function ClaseProfesor() {
                     {topic.content && topic.content.length > 0 ? (
                       <div className="contentGrid">
                         {topic.content.map((item, contentIndex) => (
-                          <div key={`content-${item.id}-${contentIndex}`} className={`contentItem ${item.type}`}>
+                          <div
+                            key={`content-${item.id}-${contentIndex}`}
+                            className={`contentItem ${item.type}`}
+                            onClick={() =>
+                              item.type === 'Material'
+                                ? handleMaterialClick(item.id)
+                                : handleAssignmentClick(item.id)
+                            }
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <p>
+                              {item.type === 'Material' ? 'Material' : 'Tarea'}
+                            </p>
                             <h4>{item.title}</h4>
                             <p>{item.description}</p>
                             {item.files && item.files.length > 0 && (

@@ -153,6 +153,22 @@ function TareaAlumno() {
               ? new Date(submission.submitted_at).toLocaleString()
               : "Not available"}
           </p>
+          {submission.files && submission.files.length > 0 ? (
+            <div>
+              <h4>Submitted Files:</h4>
+              <ul>
+                {submission.files.map((file, index) => (
+                  <li key={index}>
+                    <a href={`http://localhost:3001/${file.file_path}`} target="_blank" rel="noopener noreferrer">
+                      {file.original_name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <p>No files attached.</p>
+          )}
           {submission.grade !== null ? (
             <p>Grade: {submission.grade}</p>
           ) : (

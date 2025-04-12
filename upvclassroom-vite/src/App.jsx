@@ -42,10 +42,10 @@ function App() {
         <Route path="/cursosprofesor/crearclase" element={<CrearClase />} />
         <Route path="/cursosprofesor/claseprofesor" element={<ClaseProfesor />} />
         <Route path="/cursosprofesor/claseprofesor/vertareaprofesor" element={<VerTareaProfesor />} />
+        <Route path="/cursosprofesor/claseprofesor/vermaterial" element={<VerMaterialProfesor />} />
         <Route path="/cursosprofesor/claseprofesor/vertareaprofesor/veralumno" element={<GestionDeAlumno />} />
         <Route path="/cursosprofesor/claseprofesor/veravisoprofesor" element={<VerAvisoProfesor />} />
         <Route path="/cursosprofesor/claseprofesor/veravisoprofesor/configuraraviso" element={<ConfigurarAvisoProfesor />} />
-        <Route path="/cursosprofesor/claseprofesor/vermaterialprofesor" element={<VerMaterialProfesor />} />
         <Route path="/cursosprofesor/claseprofesor/vermaterialprofesor/configurarmaterial" element={<ConfigurarMaterialProfesor />} />
         <Route path="/cursosprofesor/claseprofesor/configurartarea" element={<ConfigurarTareaProfesor />} />
         <Route path="/cursosprofesor/claseprofesor/veralumnos" element={<VerAlumnos />} />
