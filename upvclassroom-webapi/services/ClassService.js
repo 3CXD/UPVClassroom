@@ -113,6 +113,13 @@ class ClassService {
             return { error: `No topic found with ID ${topicId}.` };
         }
 
+        const now = new Date();
+        const dueDateTime = new Date(dueDate);
+
+        if (dueDateTime < now) {
+            return { error: "The due date cannot be in the past." };
+        }
+
         try {
             const [result] = await db.execute(
                 `INSERT INTO Assignments (class_id, topic_id ,title, description, due_date) VALUES (?, ?, ?, ?, ?)`,
@@ -161,6 +168,95 @@ class ClassService {
         }
     }
     
+    async submitAssignment(assignmentId, studentId, files) {
+        console.log("Submitting assignment with data:", assignmentId, studentId, files);
+    
+        try {
+            const [assignmentCheck] = await db.execute(
+                `SELECT due_date FROM Assignments WHERE assignment_id = ?`,
+                [assignmentId]
+            );
+    
+            if (assignmentCheck.length === 0) {
+                console.log(`No assignment found with ID ${assignmentId}.`);
+                return { error: `No assignment found with ID ${assignmentId}.` };
+            }
+    
+            const dueDate = new Date(assignmentCheck[0].due_date);
+            const now = new Date();
+    
+            if (now > dueDate) {
+                return { error: "The deadline for this assignment has passed." };
+            }
+    
+            const [submissionResult] = await db.execute(
+                `INSERT INTO Submissions (assignment_id, student_id, submitted_at) VALUES (?, ?, ?)`,
+                [assignmentId, studentId, now]
+            );
+    
+            if (submissionResult.affectedRows === 0) {
+                return { error: "Failed to submit assignment." };
+            }
+    
+            const submissionId = submissionResult.insertId;
+    
+            if (files && files.length > 0) {
+                for (const file of files) {
+                    await db.execute(
+                        `INSERT INTO SubmissionFiles (generated_name, original_name, file_path, submission_id, uploaded_by) 
+                         VALUES (?, ?, ?, ?, ?)`,
+                        [file.filename, file.originalname, `uploads/${file.filename}`, submissionId, studentId]
+                    );
+                }
+            }
+    
+            return { message: "Assignment submitted successfully.", submission_id: submissionId };
+        } catch (error) {
+            console.error("Error submitting assignment:", error);
+            return { error: "Error submitting assignment." };
+        }
+    }
+
+    async deleteSubmission(assignmentId, studentId) {
+        try {
+            // Verificar si la entrega ya fue calificada
+            const [submission] = await db.execute(
+                `SELECT grade FROM Submissions WHERE assignment_id = ? AND student_id = ?`,
+                [assignmentId, studentId]
+            );
+    
+            if (submission.length === 0) {
+                return { error: "No submission found to delete." };
+            }
+    
+            if (submission[0].grade !== null) {
+                return { error: "Cannot delete a graded submission." };
+            }
+    
+            // Eliminar archivos asociados a la entrega
+            await db.execute(
+                `DELETE FROM SubmissionFiles WHERE submission_id = (
+                    SELECT submission_id FROM Submissions WHERE assignment_id = ? AND student_id = ?
+                )`,
+                [assignmentId, studentId]
+            );
+    
+            // Eliminar la entrega
+            const [result] = await db.execute(
+                `DELETE FROM Submissions WHERE assignment_id = ? AND student_id = ?`,
+                [assignmentId, studentId]
+            );
+    
+            if (result.affectedRows === 0) {
+                return { error: "Failed to delete submission." };
+            }
+    
+            return { message: "Submission deleted successfully." };
+        } catch (error) {
+            console.error("Error deleting submission:", error);
+            return { error: "Error deleting submission." };
+        }
+    }
 
     async getAnnouncements(classId) {
         try {
@@ -191,6 +287,83 @@ class ClassService {
         } catch (error) {
             console.error("Error fetching announcements:", error);
             return { error: "Error fetching announcements." };
+        }
+    }
+
+    async getMaterialById(materialId) {
+        try {
+            const [material] = await db.execute(
+                `SELECT material_id, class_id, topic_id, title, description, created_at 
+                 FROM Materials 
+                 WHERE material_id = ?`,
+                [materialId]
+            );
+    
+            if (!material || material.length === 0) {
+                console.log(`No material found with ID ${materialId}.`);
+                return { error: `No material found with ID ${materialId}.` };
+            }
+    
+            const [files] = await db.execute(
+                `SELECT original_name, file_path 
+                 FROM MaterialFiles 
+                 WHERE material_id = ?`,
+                [materialId]
+            );
+    
+            material[0].files = files || [];
+            return material[0];
+        } catch (error) {
+            console.error("Error fetching material by ID:", error);
+            return { error: "Error fetching material by ID." };
+        }
+    }
+
+    async getAssignmentById(assignmentId) {
+        try {
+            const [assignment] = await db.execute(
+                `SELECT assignment_id, class_id, topic_id, title, description, due_date, created_at 
+                 FROM Assignments 
+                 WHERE assignment_id = ?`,
+                [assignmentId]
+            );
+    
+            if (!assignment || assignment.length === 0) {
+                return { error: `No assignment found with ID ${assignmentId}.` };
+            }
+    
+            const [files] = await db.execute(
+                `SELECT original_name, file_path 
+                 FROM AssignmentFiles 
+                 WHERE assignment_id = ?`,
+                [assignmentId]
+            );
+    
+            assignment[0].files = files || [];
+            return assignment[0];
+        } catch (error) {
+            console.error("Error fetching assignment by ID:", error);
+            return { error: "Error fetching assignment by ID." };
+        }
+    }
+
+    async getSubmission(assignmentId, studentId) {
+        try {
+            const [submission] = await db.execute(
+                `SELECT s.submission_id, s.submitted_at, s.grade 
+                 FROM Submissions s 
+                 WHERE s.assignment_id = ? AND s.student_id = ?`,
+                [assignmentId, studentId]
+            );
+    
+            if (submission.length === 0) {
+                return { error: "No submission found for this assignment and student." };
+            }
+    
+            return submission[0];
+        } catch (error) {
+            console.error("Error fetching submission:", error);
+            return { error: "Error fetching submission." };
         }
     }
 
@@ -310,7 +483,12 @@ class ClassService {
     async getStudentClasses(studentId) {
         try {
             const [classes] = await db.execute(
-                `SELECT c.class_id, c.class_name FROM Classes c
+                `SELECT 
+                    c.class_id, 
+                    c.class_name, 
+                    (SELECT username FROM Users WHERE user_id = c.teacher_id) AS teacher_name,
+                    c.description 
+                 FROM Classes c
                  JOIN Enrollment e ON c.class_id = e.class_id
                  WHERE e.student_id = ?`,
                 [studentId]

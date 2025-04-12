@@ -19,7 +19,12 @@ function ClaseProfesor() {
   const [students, setStudents] = useState([]);
   const [showStudentModal, setShowStudentModal] = useState(false);
   const [showAssignmentModal, setShowAssignmentModal] = useState(false);    
-  const [newAssignment, setNewAssignment] = useState({title: '', description: '', due_date: '' });
+  const [newAssignment, setNewAssignment] = useState({
+    title: '',
+    description: '',
+    due_date: '',
+    due_time: '',
+  });
   const [successMessage, setSuccessMessage] = useState('');
   const [showTopicModal, setShowTopicModal] = useState(false);
   const [newTopic, setNewTopic] = useState({ title: '', description: '' });
@@ -239,7 +244,6 @@ function ClaseProfesor() {
       if (response.ok) {
         handleCloseMaterialModal();
 
-        // Fetch updated content for the topic
         const contentResponse = await fetch(
           `http://localhost:3001/classes/${class_id}/topicContent/${selectedTopicId}`
         );
@@ -249,7 +253,7 @@ function ClaseProfesor() {
           setTopics((prevTopics) =>
             prevTopics.map((topic) =>
               topic.topic_id === selectedTopicId
-                ? { ...topic, content: updatedContent }
+                ? { ...topic, content: updatedContent } /* keep it like this */ 
                 : topic
             )
           );
@@ -267,12 +271,15 @@ function ClaseProfesor() {
 
   const handleCreateAssignment = async (e) => {
     e.preventDefault();
+
+    const dueDateTime = `${newAssignment.due_date} ${newAssignment.due_time}:00`;
+
     const formData = new FormData();
     formData.append('classId', class_id);
     formData.append('topicId', selectedTopicId);
     formData.append('title', newAssignment.title);
     formData.append('description', newAssignment.description);
-    formData.append('due_date', newAssignment.due_date);
+    formData.append('due_date', dueDateTime);
     formData.append('teacher_Id', teacher_Id);
 
     if (file) {
@@ -298,7 +305,7 @@ function ClaseProfesor() {
           setTopics((prevTopics) =>
             prevTopics.map((topic) =>
               topic.topic_id === selectedTopicId
-                ? { ...topic, content: updatedContent }
+                ? { ...topic, content: updatedContent } /* keep it like this */
                 : topic
             )
           );
@@ -367,7 +374,7 @@ function ClaseProfesor() {
           </div>
           <div className="tercerColumnaClase">
             <button className="backButton" onClick={volver}>Volver</button>
-            <button className="backButton" onClick={() => { setShowStudentModal(true); fetchStudents(); }}>
+            <button className="backButton" onClick={() => { setShowStudentModal(true);}}> {/* keep it like this */ }
               Enroll Students
             </button>
           </div>
@@ -625,6 +632,15 @@ function ClaseProfesor() {
               type="date"
               name="due_date"
               value={newAssignment.due_date}
+              onChange={handleAssignmentInputChange}
+              min={new Date().toISOString().split('T')[0]} // Set the minimum date to today
+              required
+            />
+            <input
+              className="inputNuevaClase"
+              type="time"
+              name="due_time"
+              value={newAssignment.due_time || ''}
               onChange={handleAssignmentInputChange}
               required
             />

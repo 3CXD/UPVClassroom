@@ -43,38 +43,51 @@ function CursosAlumno() {
     };
 
     return (
-        <div>
-            <button onClick={handleDelete}>Cerrar Sesión</button>
-            <h1>Clases en Curso</h1>
-            <h2>Bienvenido, Estudiante</h2>
-            <h3>Aquí puedes ver las clases en las que estás inscrita o inscrito</h3>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre de la Clase</th>
-                        <th>Profesor que Imparte</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {classes.length > 0 ? (
-                        classes.map((clase) => (
-                            <tr key={clase.class_id}>
-                                <td>{clase.class_name}</td>
-                                <td>{clase.teacher_name || 'Sin profesor asignado'}</td>
-                                <td>
-                                    <button onClick={() => verClase(clase)}>Ver Clase</button>
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
+        <div className="bodyCursos">
+            <div className="headerCursos">
+                <div className="columnasCursos">
+                    <div className="primerColumnaCursos">
+
+                    </div>
+                    <div className="segundaColumnaCursos">
+                        <h1>Clases en Curso</h1>
+                        <h3>Aquí puedes ver las clases en las que estás inscrita o inscrito</h3>
+                    </div>
+                    <div className="tercerColumnaCursos">
+                        <button className="logoutButton" onClick={handleDelete}>Cerrar Sesión</button>
+                    </div>
+                </div>
+            </div>
+            <div className="tableroCursosAlumno">
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+                <table className='tablaCursos'>
+                    <thead className='headerTablaCursos'>
                         <tr>
-                            <td colSpan="3">No estás inscrito en ninguna clase.</td>
+                            <th>Nombre de la Clase</th>
+                            <th>Profesor que Imparte</th>
+                            <th>Acción</th>
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {classes.length > 0 ? (
+                            classes.map((clase) => (
+                                <tr key={clase.class_id}>
+                                    <td>{clase.class_name}</td>
+                                    <td>{clase.teacher_name || 'Sin profesor asignado'}</td>
+                                    <td>
+                                        <button className="btnVer" onClick={() => verClase(clase)}>Ver Clase</button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="3">No estás inscrito en ninguna clase.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            
         </div>
     );
 }
