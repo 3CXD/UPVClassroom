@@ -156,7 +156,12 @@ function VerTareaProfesor() {
                     onClick={() => {
                       const grade = prompt("Enter the grade:", submission.grade || "");
                       if (grade !== null) {
-                        handleGradeSubmission(student.user_id, grade);
+                        const numericGrade = parseFloat(grade);
+                        if (isNaN(numericGrade) || numericGrade < 0 || numericGrade > 100) {
+                          alert("Please enter a valid grade between 0 and 100.");
+                        } else {
+                          handleGradeSubmission(student.user_id, numericGrade);
+                        }
                       }
                     }}
                   >
