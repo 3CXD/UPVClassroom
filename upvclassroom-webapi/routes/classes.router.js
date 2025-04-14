@@ -56,6 +56,94 @@ router.get("/:Id/topics", async (req, res) => {
     }
 });
 
+router.get("/:classId/students", async (req, res) => {
+    const { classId } = req.params;
+
+    try {
+        const classService = new ClassService();
+        const students = await classService.getStudentsByClassId(classId);
+
+        if (!students || students.length === 0) {
+            return res.status(404).json({ error: "No students found for this class." });
+        }
+
+        res.json(students);
+    } catch (error) {
+        console.error("Error fetching students:", error);
+        res.status(500).send("Error fetching students: " + error.message);
+    }
+});
+
+router.get("/:classId/material/:materialId", async (req, res) => {
+    try {
+        const { materialId } = req.params;
+        const classService = new ClassService();
+        const material = await classService.getMaterialById(materialId);
+
+        if (material.error) {
+            return res.status(404).json({ error: material.error });
+        }
+
+        res.json(material);
+    } catch (error) {
+        console.error("Error fetching material by ID:", error);
+        res.status(500).send("Error fetching material by ID: " + error.message);
+    }
+});
+
+router.get('/assignments/:assignmentId', async (req, res) => {
+    const { assignmentId } = req.params;
+
+    try {
+        const classService = new ClassService();
+        const assignment = await classService.getAssignmentById(assignmentId);
+
+        if (assignment.error) {
+            return res.status(404).json({ error: assignment.error });
+        }
+
+        res.json(assignment);
+    } catch (error) {
+        console.error('Error fetching assignment details:', error);
+        res.status(500).send({ error: 'Error fetching assignment details: ' + error.message });
+    }
+});
+
+router.get("/assignment/:assignmentId/submissions", async (req, res) => {
+    const { assignmentId } = req.params;
+
+    try {
+        const classService = new ClassService();
+        const submissions = await classService.getSubmissionsByAssignmentId(assignmentId);
+
+        if (!submissions || submissions.length === 0) {
+            return res.status(404).json({ error: "No submissions found for this assignment." });
+        }
+
+        res.json(submissions);
+    } catch (error) {
+        console.error("Error fetching submissions:", error);
+        res.status(500).send("Error fetching submissions: " + error.message);
+    }
+});
+
+router.get('/assignment/:assignmentId/submission/:studentId', async (req, res) => {
+    const { assignmentId, studentId } = req.params;
+
+    try {
+        const classService = new ClassService();
+        const submission = await classService.getSubmission(assignmentId, studentId);
+
+        if (submission.error) {
+            return res.status(404).json({ error: submission.error });
+        }
+
+        res.json(submission);
+    } catch (error) {
+        console.error('Error fetching submission:', error);
+        res.status(500).send('Error fetching submission: ' + error.message);
+    }
+});
 
 router.get("/:Id/topicContent/:topicId", async (req, res) => {
     try {
@@ -221,6 +309,63 @@ router.post('/createAssignment', upload, async (req, res) => {
     } catch (error) {
         console.error('Error creating assignment:', error);
         res.status(500).send('Error creating assignment: ' + error.message);
+    }
+});
+
+router.post('/assignment/:assignmentId/submit', upload, async (req, res) => {
+    const { assignmentId } = req.params;
+    const { studentId } = req.body;
+    const files = req.files;
+
+    try {
+        const classService = new ClassService();
+        const result = await classService.submitAssignment(assignmentId, studentId, files);
+
+        if (result.error) {
+            return res.status(400).json({ error: result.error });
+        }
+
+        res.status(201).json(result);
+    } catch (error) {
+        console.error('Error submitting assignment:', error);
+        res.status(500).send('Error submitting assignment: ' + error.message);
+    }
+});
+
+router.post("/assignment/:assignmentId/submission/:studentId/grade", async (req, res) => {
+    const { assignmentId, studentId } = req.params;
+    const { grade } = req.body;
+
+    try {
+        const classService = new ClassService();
+        const result = await classService.gradeSubmission(assignmentId, studentId, grade);
+
+        if (result.error) {
+            return res.status(400).json({ error: result.error });
+        }
+
+        res.json({ message: "Grade updated successfully." });
+    } catch (error) {
+        console.error("Error grading submission:", error);
+        res.status(500).send("Error grading submission: " + error.message);
+    }
+});
+
+router.delete('/assignment/:assignmentId/submission/:studentId', async (req, res) => {
+    const { assignmentId, studentId } = req.params;
+
+    try {
+        const classService = new ClassService();
+        const result = await classService.deleteSubmission(assignmentId, studentId);
+
+        if (result.error) {
+            return res.status(400).json({ error: result.error });
+        }
+
+        res.json({ message: "Submission deleted successfully." });
+    } catch (error) {
+        console.error('Error deleting submission:', error);
+        res.status(500).send('Error deleting submission: ' + error.message);
     }
 });
 

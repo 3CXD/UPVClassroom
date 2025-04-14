@@ -19,7 +19,12 @@ function ClaseProfesor() {
   const [students, setStudents] = useState([]);
   const [showStudentModal, setShowStudentModal] = useState(false);
   const [showAssignmentModal, setShowAssignmentModal] = useState(false);    
-  const [newAssignment, setNewAssignment] = useState({title: '', description: '', due_date: '' });
+  const [newAssignment, setNewAssignment] = useState({
+    title: '',
+    description: '',
+    due_date: '',
+    due_time: '',
+  });
   const [successMessage, setSuccessMessage] = useState('');
   const [showTopicModal, setShowTopicModal] = useState(false);
   const [newTopic, setNewTopic] = useState({ title: '', description: '' });
@@ -239,7 +244,6 @@ function ClaseProfesor() {
       if (response.ok) {
         handleCloseMaterialModal();
 
-        // Fetch updated content for the topic
         const contentResponse = await fetch(
           `http://localhost:3001/classes/${class_id}/topicContent/${selectedTopicId}`
         );
@@ -249,7 +253,7 @@ function ClaseProfesor() {
           setTopics((prevTopics) =>
             prevTopics.map((topic) =>
               topic.topic_id === selectedTopicId
-                ? { ...topic, content: [data, ...topic.content] }
+                ? { ...topic, content: updatedContent } /* keep it like this */ 
                 : topic
             )
           );
@@ -267,12 +271,15 @@ function ClaseProfesor() {
 
   const handleCreateAssignment = async (e) => {
     e.preventDefault();
+
+    const dueDateTime = `${newAssignment.due_date} ${newAssignment.due_time}:00`;
+
     const formData = new FormData();
     formData.append('classId', class_id);
     formData.append('topicId', selectedTopicId);
     formData.append('title', newAssignment.title);
     formData.append('description', newAssignment.description);
-    formData.append('due_date', newAssignment.due_date);
+    formData.append('due_date', dueDateTime);
     formData.append('teacher_Id', teacher_Id);
 
     if (file) {
@@ -288,7 +295,6 @@ function ClaseProfesor() {
       if (response.ok) {
         handleCloseAssignmentModal();
 
-        // Fetch updated content for the topic
         const contentResponse = await fetch(
           `http://localhost:3001/classes/${class_id}/topicContent/${selectedTopicId}`
         );
@@ -298,7 +304,7 @@ function ClaseProfesor() {
           setTopics((prevTopics) =>
             prevTopics.map((topic) =>
               topic.topic_id === selectedTopicId
-                ? { ...topic, content: [data, ...topic.content] } // Add new assignment at the beginning
+                ? { ...topic, content: updatedContent } /* keep it like this */
                 : topic
             )
           );
@@ -353,6 +359,25 @@ function ClaseProfesor() {
     }
   };
 
+  const handleMaterialClick = (materialId) => {
+    navigate(`/cursosprofesor/claseprofesor/vermaterial`, {
+      state: { 
+        materialId, 
+        classData: { class_id, class_name, description, progam }, 
+        teacher_Id 
+      }
+    });
+  };
+
+  const handleAssignmentClick = (assignmentId) => {
+    navigate(`/cursosprofesor/claseprofesor/vertareaprofesor`, {
+      state: { 
+        assignmentId, 
+        classData: { class_id, class_name, description, progam }, 
+        teacher_Id 
+      }
+    });
+  };
   return (
     <div className="bodyClase">
       <div className="headerClase">
@@ -367,7 +392,7 @@ function ClaseProfesor() {
           </div>
           <div className="tercerColumnaClase">
             <button className="backButton" onClick={volver}>Volver</button>
-            <button className="backButton" onClick={() => { setShowStudentModal(true); fetchStudents(); }}>
+            <button className="backButton" onClick={() => { setShowStudentModal(true);}}> {/* keep it like this */ }
               Enroll Students
             </button>
           </div>
@@ -464,7 +489,19 @@ function ClaseProfesor() {
                     {topic.content && topic.content.length > 0 ? (
                       <div className="contentGrid">
                         {topic.content.map((item, contentIndex) => (
-                          <div key={`content-${item.id}-${contentIndex}`} className={`contentItem ${item.type}`}>
+                          <div
+                            key={`content-${item.id}-${contentIndex}`}
+                            className={`contentItem ${item.type}`}
+                            onClick={() =>
+                              item.type === 'Material'
+                                ? handleMaterialClick(item.id)
+                                : handleAssignmentClick(item.id)
+                            }
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <p>
+                              {item.type === 'Material' ? 'Material' : 'Tarea'}
+                            </p>
                             <h4>{item.title}</h4>
                             <p>{item.description}</p>
                             {item.files && item.files.length > 0 && (
@@ -625,6 +662,15 @@ function ClaseProfesor() {
               type="date"
               name="due_date"
               value={newAssignment.due_date}
+              onChange={handleAssignmentInputChange}
+              min={new Date().toISOString().split('T')[0]} // Set the minimum date to today
+              required
+            />
+            <input
+              className="inputNuevaClase"
+              type="time"
+              name="due_time"
+              value={newAssignment.due_time || ''}
               onChange={handleAssignmentInputChange}
               required
             />

@@ -5,7 +5,13 @@ function ClaseAlumno() {
   const navigate = useNavigate();
   const location = useLocation();
   const { class_id, class_name, description, teacher_name, studentId } = location.state || {};
-
+  
+  const classData = {
+    class_id,
+    class_name,
+    description,
+  };
+  
   const [activeTab, setActiveTab] = useState('announcements');
   const [announcements, setAnnouncements] = useState([]);
   const [topics, setTopics] = useState([]);
@@ -13,6 +19,28 @@ function ClaseAlumno() {
 
   const volver = () => {
     navigate('/cursosalumno', { state: { user_id: studentId } });
+  };
+
+  const handleMaterialClick = (materialId) => {
+    navigate(`/cursosalumno/clasealumno/vermaterialalumno`, {
+      state: { 
+        materialId, 
+        studentId, 
+        classData, 
+        teacher_name 
+      }
+    });
+  };
+
+  const handleAssignmentClick = (assignmentId) => {
+    navigate(`/cursosalumno/clasealumno/vertareaalumno`, {
+      state: { 
+        assignmentId, 
+        studentId, 
+        classData, 
+        teacher_name 
+      }
+    });
   };
 
   useEffect(() => {
@@ -86,7 +114,7 @@ function ClaseAlumno() {
   return (
     <div className="bodyClase">
       <div className="headerClase">
-        <div className = "columnasClase">
+        <div className="columnasClase">
           <div className="primerColumnaClase"></div>
           <div className="segundaColumnaClase">
             <h1>{class_name || 'Clase no encontrada'}</h1>
@@ -101,7 +129,6 @@ function ClaseAlumno() {
         </div>
       </div>
 
-      {/* Tabs for switching between Announcements and Topics */}
       <div className="tabs">
         <button
           className={`tabButton ${activeTab === 'announcements' ? 'active' : ''}`}
@@ -117,20 +144,16 @@ function ClaseAlumno() {
         </button>
       </div>
 
-      {/* Content for Announcements */}
       {activeTab === 'announcements' && (
         <div className="tabContent">
           <div className="tableroClase">
-              <h2>Tablón</h2>
+            <h2>Tablón</h2>
             <div className="acomodar">
               {error && <p style={{ color: 'red' }}>{error}</p>}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
                 {announcements.length > 0 ? (
                   announcements.map((announcement) => (
-                    <div
-                      key={announcement.announcement_id}
-                      className="tarjetaAnuncio"
-                    >
+                    <div key={announcement.announcement_id} className="tarjetaAnuncio">
                       <h3>{announcement.title}</h3>
                       <p>{announcement.message}</p>
                       {announcement.files && announcement.files.length > 0 && (
@@ -158,12 +181,10 @@ function ClaseAlumno() {
                 )}
               </div>
             </div>
-          
           </div>
         </div>
       )}
 
-      {/* Content for Topics */}
       {activeTab === 'topics' && (
         <div className="tabContent">
           <div className="tableroClase">
@@ -178,7 +199,17 @@ function ClaseAlumno() {
                     {topic.content && topic.content.length > 0 ? (
                       <div className="contentGrid">
                         {topic.content.map((item, contentIndex) => (
-                          <div key={`content-${item.id}-${contentIndex}`} className={`contentItem ${item.type}`}>
+                          <div
+                            key={`content-${item.id}-${contentIndex}`}
+                            className={`contentItem ${item.type}`}
+                            onClick={() =>
+                              item.type === 'Material'
+                                ? handleMaterialClick(item.id)
+                                : handleAssignmentClick(item.id)
+                            }
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <p>{item.type === 'Material' ? 'Material' : 'Tarea'}</p> {/* Add this line */}
                             <h4>{item.title}</h4>
                             <p>{item.description}</p>
                             {item.files && item.files.length > 0 && (
