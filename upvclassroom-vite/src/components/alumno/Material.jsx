@@ -57,30 +57,51 @@ function MaterialAlumno() {
   }
 
   return (
-    <div>
-      <h1>Material Details</h1>
-      <p>Title: {material.title}</p>
-      <p>Description: {material.description}</p>
-      <p>Created At: {new Date(material.created_at).toLocaleString()}</p>
-      {material.files && material.files.length > 0 && (
-        <div>
-          <h3>Files:</h3>
-          <ul>
-            {material.files.map((file, index) => (
-              <li key={index}>
-                <a
-                  href={`http://localhost:3001/${file.file_path}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {file.original_name}
-                </a>
-              </li>
-            ))}
-          </ul>
+    <div className='bodyCursos'>
+      <div className='headerCursos'>
+        <div className='columnasCursos'>
+          <div className="primerColumnaCursos">
+
+          </div>
+          <div className="segundaColumnaCursos">
+              <h1>Detalles de material</h1>
+          </div>
+          <div className="tercerColumnaCursos">
+            <button className='logoutButton' onClick={handleBack}>Regresar</button>
+          </div>
         </div>
-      )}
-      <button onClick={handleBack}>Regresar</button>
+      </div>
+      <div className='columnasMaterial'>
+        <div className='columnaMitad'>
+        <h1>{material.title}</h1>
+        <h2>Descripción: {material.description}</h2>
+        <h3>Publicado el: {new Date(material.created_at).toLocaleString()}</h3>
+        
+        </div>
+        <div className='columnaMitad'>
+          {material.files && material.files.length > 0 && (
+            <div>
+              <h2>Archivos:</h2>
+              <ul>
+                {material.files.map((file, index) => (
+                  <li key={index}>
+                    <a
+                      href={`http://localhost:3001/${file.file_path}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className='btnArchivo'
+                    >
+                      {file.original_name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      
     </div>
   );
 }

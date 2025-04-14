@@ -51,12 +51,6 @@ async function seedUsers(db) {
             password_hash: "password4",
             role: "student",
         },
-        {
-            username: "AngelCamacho",
-            email: "student5@example.com",
-            password_hash: "password5",
-            role: "student",
-        },
     ];
 
     try {

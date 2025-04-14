@@ -233,70 +233,92 @@ function TareaAlumno() {
   if (!assignment) return <p>Cargando...</p>;
 
   return (
-    <div>
-      <h1>Detalles de la Tarea</h1>
-      <p>Título: {assignment.title}</p>
-      <p>Descripción: {assignment.description}</p>
-      <p>Fecha límite: {new Date(assignment.due_date).toLocaleString()}</p>
+    <div className="bodyCursos">
+        <div className="headerCursos">
+            <div className="columnasCursos">
+                <div className="primerColumnaCursos">
 
-      {submission ? (
-        <div>
-          <p>Fecha de entrega: {new Date(submission.submitted_at).toLocaleString()}</p>
-          {submission.files?.length > 0 ? (
-            <div>
-              <h4>Archivos Entregados:</h4>
-              <ul>
-                {submission.files.map((file, index) => (
-                  <li key={index}>
-                    <a href={`http://localhost:3001/${file.file_path}`} target="_blank" rel="noreferrer">
-                      {file.original_name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+                </div>
+                <div className="segundaColumnaCursos">
+                <h1>Detalles de la Tarea</h1>
+                </div>
+                <div className="tercerColumnaCursos">
+                  <button className='logoutButton' onClick={handleBack} style={{ marginTop: '2rem' }}>
+                    Regresar
+                  </button>
+                </div>
             </div>
-          ) : <p>Sin archivos adjuntos</p>}
-          <p>Calificación: {submission.grade ?? "Sin calificar"}</p>
-          {!submission.grade && <button onClick={handleUndoSubmit}>Cancelar Entrega</button>}
         </div>
-      ) : (
-        <div>
-          <h3>Entregar Trabajo</h3>
-          <div>
-            <input
-              type="file"
-              multiple
-              onChange={handleFileChange}
-              id="fileInput"
-              style={{ display: 'none' }}
-            />
-            <button onClick={() => document.getElementById('fileInput').click()}>
-              Seleccionar Archivos
-            </button>
-            
-            {files.length > 0 && (
+      <div className='columnasMaterial'>
+        <div className='columnaGrandeTarea'>
+          <h1>{assignment.title}</h1>
+          <h2>Descripción:</h2>
+          <p>{assignment.description}</p>
+          <h3>Fecha límite: {new Date(assignment.due_date).toLocaleString()}</h3>
+        </div>
+        <div className='columnaPequenaTarea'>
+          <div className="cuadroMorado">
+            {submission ? (
               <div>
-                <h4>Archivos en borrador:</h4>
-                <ul>
-                  {files.map((file, index) => (
-                    <li key={index}>
-                      {file.name}
-                      <button onClick={() => removeFile(index)}>Eliminar</button>
-                    </li>
-                  ))}
-                </ul>
+                <p>Fecha de entrega: {new Date(submission.submitted_at).toLocaleString()}</p>
+                {submission.files?.length > 0 ? (
+                  <div>
+                    <h4>Archivos Entregados:</h4>
+                    <ul>
+                      {submission.files.map((file, index) => (
+                        <li key={index}>
+                          <a
+                            className='btnTarea' 
+                            href={`http://localhost:3001/${file.file_path}`} target="_blank" rel="noreferrer">
+                            {file.original_name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : <p>Sin archivos adjuntos</p>}
+                <p>Calificación: {submission.grade ?? "Sin calificar"}</p>
+                {!submission.grade && <button className="btnTarea" onClick={handleUndoSubmit}>Cancelar Entrega</button>}
+              </div>
+            ) : (
+              <div>
+                <h2>Entregar Trabajo</h2>
+                <div>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    id="fileInput"
+                    style={{ display: 'none' }}
+                  />
+                  <button className='btnTarea' onClick={() => document.getElementById('fileInput').click()}>
+                    Seleccionar Archivos
+                  </button>
+                  
+                  {files.length > 0 && (
+                    <div>
+                      <h4>Archivos en borrador:</h4>
+                      <ul>
+                        {files.map((file, index) => (
+                          <li key={index}>
+                            {file.name}
+                            <button className='btnTarea' onClick={() => removeFile(index)}>Eliminar</button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+                <button className='btnTarea' onClick={handleSubmit} style={{ marginTop: '1rem' }}>
+                  Entregar Tarea
+                </button>
               </div>
             )}
           </div>
-          <button onClick={handleSubmit} style={{ marginTop: '1rem' }}>
-            Entregar Tarea
-          </button>
+          
         </div>
-      )}
-
-      <button onClick={handleBack} style={{ marginTop: '2rem' }}>
-        Regresar
-      </button>
+      </div>
+      
     </div>
   );
 }

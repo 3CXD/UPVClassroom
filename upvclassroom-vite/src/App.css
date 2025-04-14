@@ -189,7 +189,8 @@ html, body {
 
 .bodyCursos{
  width: 100%;
- height: 100%;
+ height: auto;
+ min-height: 100%;
  background-color: white;
  display: flex;
  color: black;
@@ -658,4 +659,219 @@ html, body {
   background-color: rgb(125, 50, 168, 1);
   color: white;
   transition: all 0.3s ease; 
+}
+
+/*//////////////////// TODO LO DE MATERIAL Y TAREAS ////////////////////*/
+
+
+
+.columnasMaterial{
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin:0%;
+  justify-items: center;
+  align-content: center;
+}
+
+
+.columnaMitad{
+  margin-left: 5%;
+  width: 45%;
+  height: 100%;
+  justify-items: left;
+  align-content: center;
+}
+
+
+.columnaPequenaTarea{
+  width: 34%;
+  height: 100%;
+  justify-items: left;
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+}
+
+
+.columnaGrandeTarea{
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 56%;
+  height: 100%;
+  justify-items: left;
+  align-content: center;
+  text-align: left;
+}
+
+.btnArchivo{
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: all 0.3s ease; 
+}
+
+.btnArchivo:hover{
+  background-color: rgb(223, 167, 255);
+  color: rgb(0, 0, 0);
+  border-radius: 10px;
+  transition: all 0.3s ease; 
+}
+
+.btnTarea{
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  margin-left: 15px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: all 0.3s ease; 
+}
+
+.btnTarea:hover{
+  background-color: rgba(125, 50, 168, 1);
+  color: rgb(255, 255, 255);
+  border-radius: 10px;
+  transition: all 0.3s ease; 
+}
+
+.cuadroMorado{
+  background-color: rgba(125, 50, 168, 1);
+  color: white;
+  padding: 20%;
+  border-radius: 10%;
+}
+
+.vistaDeTareasDeAlumnos{
+  margin:3% 5%;
+}
+
+.btnBlanco{
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  border-radius: 10px;
+  transition: all 0.3s ease; 
+}
+
+.btnBlanco:hover{
+  background-color: rgba(125, 50, 168, 1);
+  color: rgb(255, 255, 255);
+  border-radius: 10px;
+  transition: all 0.3s ease; 
+}
+
+/*//////////////////// TODO LO DE RESPONSIVE AAAAAAAAA ////////////////////*/
+
+@media (max-width: 768px) {
+  .columnasHomepage{
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+  .columnaIzquierdaHomepage{
+    width: 0%;
+    height: 0%;
+  }
+  .columnaDerechaHomepage{
+    width: 100%;
+    height: 100%;
+  }
+  .columnasCursos{
+    flex-direction: column;
+    padding-bottom:10px;
+  }
+  .cuadroBlancoHomepage{
+    width: 80%;
+    height: 70%;
+    color: black;
+    background-color: white;
+    border-radius: 20px;
+    margin: auto;
+    padding: 2em;
+  }
+  .primerColumnaCursos{
+    height: 0%;
+    width: 0%;
+  }
+  .segundaColumnaCursos{
+    height: 100%;
+    width: 70%;
+  }
+  .tercerColumnaCursos{
+    height: 100%;
+    width: 20%;
+  }
+  .agregarClase{
+    width:100%;
+  }
+  .tarjetaClase{
+    width: 100%;
+  }
+  .columnasClase{
+    flex-direction: column;
+  }
+  .segundaColumnaClase{
+    width: 100%;
+  }
+  .tercerColumnaClase{
+    width: 100%;
+    flex-direction: row;
+    margin-bottom:10%;
+  }
+  .agregarAnuncio{
+    width: 100%;
+  }
+  .tarjetaAnuncio{
+    width: 100%;
+  }
+  .contentGrid{
+    grid-template-columns: repeat(1, 1fr); /* 2 items per row */
+  }
+  .btnAddAssignment{
+    margin: 5px;
+  }
+  .btnAddMaterial{
+    margin: 5px;
+  }
+  .submissionsGrid{
+    grid-template-columns: repeat(1, 1fr); /* 2 items per row */
+  }
+  .columnasMaterial{
+    flex-direction: column;
+  }
+  .columnaMitad{
+    width: 90%;
+    height: 100%;
+    margin: 0%;
+    justify-items: left;
+    align-content: center;
+  }
+  .tableroCursosAlumno{
+    margin-top:20px;
+  }
+  .tablaCursos{
+    width: 90%;
+  }
+  .columnaGrandeTarea{
+    width: 90%;
+    height: 100%;
+    justify-items: left;
+    align-content: center;
+    text-align: left;
+  }
+  .columnaPequenaTarea{
+    width: 90%;
+    height: 100%;
+    align-content: center;
+  }
+  .cuadroMorado{
+    width: 90%;
+    height: 100%;
+    padding:5%;
+    align-content: center;
+  }
 }
